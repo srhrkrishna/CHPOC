@@ -1,0 +1,33 @@
+﻿<form name="form" novalidate class="login-form" data-backdrop="static">
+    <div id="loginForm">
+        <div class="modal-header">
+            <h4>Sign in</h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-danger" ng-show="loginFailed">
+                Please provide a valid login credientials.
+            </div>
+            <div class="alert alert-info">Please enter your login details</div>
+            <div>
+                <table class="table login-block">
+                    <tr>
+                        <td>
+                            <label>Username</label></td>
+                        <td>
+                            <input name="login" ng-model="user.username" required autofocus class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Password</label></td>
+                        <td>
+                            <input name="pass" type="password" ng-model="user.password" required class="form-control"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary login" ng-click="signIn()" ng-disabled='form.$invalid'>Sign in</button>
+            <button class="btn btn-primary cancel" ng-click="cancelSignIn()">Cancel</button>
+        </div>
+    </div>
+</form>
