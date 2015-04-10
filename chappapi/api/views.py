@@ -14,4 +14,20 @@ class VideoView(views.APIView):
         return response
 
     def put(self, request, *args, **kwargs):
-        return Response('',status=status.HTTP_201_CREATED)
+        return Response('', status=status.HTTP_201_CREATED)
+
+
+class UserView(views.APIView):
+    permission_classes = []
+
+    def post(self, request, *args, **kwargs):
+        response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
+        response['x-a12n'] = '711722bf-1fb4-43e1-b23b-00c755aeeeab'
+        return response
+
+
+class List(views.APIView):
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        return Response(data='{Links:[TestVideo1.mp4, Test2.mp4]}', status=status.HTTP_200_OK)
