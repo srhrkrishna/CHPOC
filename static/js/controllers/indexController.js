@@ -2,6 +2,8 @@
 
     var modalInstance = null;
 
+    $scope.apiCall = openstackService;
+
     $scope.showLogin = function () {
         modalInstance = $modal.open({
             templateUrl: 'html/login.html',
@@ -16,12 +18,11 @@
     $scope.$on("loginSuccess", function (event, args) {
         if (args.username) {
             $scope.currentUser = args.username;
-            console.log(openstackService);
         }
     });
     
     $scope.downloadFile = function() {
-        openstackService();
+        openstackService.request();
     }
 
     $scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];
