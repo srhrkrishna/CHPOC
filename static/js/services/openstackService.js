@@ -1,6 +1,9 @@
-﻿openstackApp.service('openstackService', ['$http', function ($http) {
+﻿openstackApp.service('openstackService', ['$rootScope', function ($rootScope) {
 
-    var url = 'http://169.53.139.163:8000/video/';
+    var apiCall = { 
+        isDownloading: false
+        , request: null
+    }, url = 'http://169.53.139.163:8000/video/';
 
     function createCORSRequest(method, url) {
         var xhr = new XMLHttpRequest();
@@ -11,21 +14,24 @@
             xhr = null;
         }
         return xhr;
-    }
+    };
 
-    var apiCall = function makeCorsRequest() {        
+    apiCall.request = function makeCorsRequest() {  
 
         var xhr = createCORSRequest('POST', url);
         if (!xhr) {
             console.log('CORS not supported');
             return;
         }
+        apiCall.isDownloading = true;
 
         xhr.onload = function () {
             var text = xhr.response;
             var file = new Blob([text], {
                 type: 'video/mp4'
             });
+            apiCall.isDownloading = false;
+            $rootScope.$apply();
             var fileURL = URL.createObjectURL(file);
             var a = document.createElement('a');
             a.href = fileURL;
@@ -38,14 +44,13 @@
 
         xhr.onerror = function () {
             console.log('XMLHTTPRequest Error.');
+            apiCall.isDownloading = false;
         };
 
         xhr.send();
-    }
+    };
     
     return apiCall;
-
-    //makeCorsRequest();
 
 
 }]);
