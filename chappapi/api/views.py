@@ -1,8 +1,10 @@
 from wsgiref.util import FileWrapper
 from django.http import HttpResponse
 from rest_framework import views, status
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-
+import pickle
+from chappapi.api.models import Video
 
 class VideoView(views.APIView):
     permission_classes = []
@@ -13,8 +15,36 @@ class VideoView(views.APIView):
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'test1.mp4'
         return response
 
-    def put(self, request, *args, **kwargs):
-        return Response('', status=status.HTTP_201_CREATED)
+
+# class VideoUpload(views.APIView):
+#     permission_classes = [FileUploadParser, ]
+#
+#     def put(self, request):
+#         new_video = Video(fileData=self.data['file'])
+#         new_video.save()
+#
+#         # file_obj = request.data['file']
+#         # filename = request.FILES['filename'].name
+#         # with open(filename, 'wb') as output:
+#         #     pickle.dump(file_obj, filename, pickle.HIGHEST_PROTOCOL)
+#         # file_obj.save("/home/ubuntu/files/uploaded/")
+#         return Response('', status=status.HTTP_201_CREATED)
+class FileUploadView(views.APIView):
+    parser_classes = (FileUploadParser, )
+
+    def put(self, request):
+        up_file = request.data.get('file', False)
+        print(up_file)
+        destination = open('/home/krishna/Documents/' + up_file.name, 'wb+')
+        for chunk in up_file.chunks():
+            destination.write(chunk)
+            destination.close()
+
+        # ...
+        # do some stuff with uploaded file
+        # ...
+        return Response(up_file.name, status.HTTP_201_CREATED)
+
 
 
 class UserView(views.APIView):
