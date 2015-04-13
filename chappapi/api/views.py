@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from rest_framework import views, status
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-import pickle
-from chappapi.api.models import Video
+import zlib
+import base64
 
 class VideoView(views.APIView):
     permission_classes = []
@@ -33,12 +33,19 @@ class FileUploadView(views.APIView):
     parser_classes = (FileUploadParser, )
 
     def put(self, request):
-        up_file = request.data.get('file', False)
-        print(up_file)
+        up_file = request.data.get('file', '')
+
         destination = open('/home/krishna/Documents/' + up_file.name, 'wb+')
         for chunk in up_file.chunks():
             destination.write(chunk)
             destination.close()
+
+        thumbnail = request.META.get('HTTP_THUMBNAIL')
+        thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
+        str1 = zlib.decompress(base64.b64decode(thumbnail))
+        destination1 = open('/home/krishna/Documents/'+thumbnail_name, 'wb+')
+        destination1.write(str1)
+        destination1.close()
 
         # ...
         # do some stuff with uploaded file
@@ -60,4 +67,4 @@ class List(views.APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
-        return Response(data='{Links:[TestVideo1.mp4, Test2.mp4]}', status=status.HTTP_200_OK)
+        return Response(data='{"Links":["TestVideo1.mp4", "Test2.mp4"]}', status=status.HTTP_200_OK)
