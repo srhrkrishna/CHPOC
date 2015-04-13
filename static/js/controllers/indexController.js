@@ -1,4 +1,4 @@
-﻿openstackApp.controller('indexController', ['$scope', '$modal', 'openstackService', function ($scope, $modal, openstackService) {
+﻿openstackApp.controller('indexController', ['$scope', '$modal', 'openstackService', 'videoService', function ($scope, $modal, openstackService, videoService) {
 
     var modalInstance = null;
 
@@ -19,6 +19,10 @@
         if (args.username) {
             $scope.currentUser = args.username;
         }
+        videoService.getVideos(function(data){
+            //var thisData = JSON.parse(data);
+            //console.log(thisData);
+        });
     });
     
     $scope.downloadFile = function() {

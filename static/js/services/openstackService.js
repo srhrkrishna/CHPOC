@@ -3,7 +3,7 @@
     var apiCall = { 
         isDownloading: false
         , request: null
-    }, url = 'http://169.53.139.163:8000/video/';
+    }, url = App_Constants.url + '/video/';
 
     function createCORSRequest(method, url) {
         var xhr = new XMLHttpRequest();
