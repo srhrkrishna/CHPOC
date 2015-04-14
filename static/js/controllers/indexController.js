@@ -20,8 +20,8 @@
             $scope.currentUser = args.username;
         }
         videoService.getVideos(function(data){
-            //var thisData = JSON.parse(data);
-            //console.log(thisData);
+            var thisData = JSON.parse(data);
+            $scope.links = thisData.Links;
         });
     });
     
@@ -29,6 +29,6 @@
         openstackService.request();
     }
 
-    $scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];
+    //$scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];
 
 }]);
