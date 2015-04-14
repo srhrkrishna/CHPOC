@@ -35,7 +35,7 @@ class FileUploadView(views.APIView):
     def put(self, request):
         up_file = request.data.get('file', '')
 
-        destination = open('/home/krishna/Documents/' + up_file.name, 'wb+')
+        destination = open('/home/ubuntu/files/' + up_file.name, 'wb+')
         for chunk in up_file.chunks():
             destination.write(chunk)
             destination.close()
@@ -43,7 +43,7 @@ class FileUploadView(views.APIView):
         thumbnail = request.META.get('HTTP_THUMBNAIL')
         thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
         str1 = zlib.decompress(base64.b64decode(thumbnail))
-        destination1 = open('/home/krishna/Documents/'+thumbnail_name, 'wb+')
+        destination1 = open('/home/ubuntu/files/'+thumbnail_name, 'wb+')
         destination1.write(str1)
         destination1.close()
 
