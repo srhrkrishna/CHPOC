@@ -34,6 +34,13 @@ class FileUploadView(views.APIView):
 
     def put(self, request):
         up_file = request.data.get('file', '')
+        try:
+            auth_token = request.META.get('HTTP_X_A12N')
+            if auth_token != "711722bf-1fb4-43e1-b23b-00c755aeeeab":
+                return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+
+        except:
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
         destination = open('/home/ubuntu/files/' + up_file.name, 'wb+')
         for chunk in up_file.chunks():
