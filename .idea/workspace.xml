@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1b26ed2-69a0-42f5-86f7-90b935c52c87" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chappapi/urls.py" afterPath="$PROJECT_DIR$/chappapi/urls.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/chappapi/api/views.py" afterPath="$PROJECT_DIR$/chappapi/api/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CHPOC.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/chappapi/api/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="805" max-vertical-offset="1245">
-              <caret line="68" column="66" selection-start-line="68" selection-start-column="30" selection-end-line="68" selection-end-column="66" />
+            <state vertical-scroll-proportion="0.4566745" vertical-offset="240" max-vertical-offset="1680">
+              <caret line="29" column="44" selection-start-line="29" selection-start-column="44" selection-end-line="29" selection-end-column="44" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -38,11 +40,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="apiclient.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="apiclient.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../apiclient.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7025761" vertical-offset="0" max-vertical-offset="510">
-              <caret line="20" column="71" selection-start-line="20" selection-start-column="71" selection-end-line="20" selection-end-column="71" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
+              <caret line="13" column="17" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -53,8 +55,8 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/chappapi/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="360">
-              <caret line="16" column="41" selection-start-line="16" selection-start-column="41" selection-end-line="16" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
+              <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -82,10 +84,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/chappapi/urls.py" />
         <option value="$PROJECT_DIR$/chappapi/api/models.py" />
-        <option value="$PROJECT_DIR$/chappapi/api/views.py" />
+        <option value="$USER_HOME$/Documents/views.py" />
         <option value="$PROJECT_DIR$/../apiclient.py" />
+        <option value="$PROJECT_DIR$/chappapi/urls.py" />
+        <option value="$PROJECT_DIR$/chappapi/api/views.py" />
       </list>
     </option>
   </component>
@@ -174,7 +177,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../apiclient.py" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/views.py" />
     <property name="recentsLimit" value="5" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -532,32 +535,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/Documents/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26527572" vertical-offset="542" max-vertical-offset="1260">
+          <caret line="56" column="26" selection-start-line="0" selection-start-column="0" selection-end-line="86" selection-end-column="100" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/chappapi/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
-          <caret line="16" column="41" selection-start-line="16" selection-start-column="41" selection-end-line="16" selection-end-column="41" />
+          <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/chappapi/api/views.py">
+    <entry file="file://$PROJECT_DIR$/../apiclient.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="805" max-vertical-offset="1245">
-          <caret line="68" column="66" selection-start-line="68" selection-start-column="30" selection-end-line="68" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
+          <caret line="13" column="17" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
           <folding>
-            <element signature="e#0#36#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../apiclient.py">
+    <entry file="file://$PROJECT_DIR$/chappapi/api/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7025761" vertical-offset="0" max-vertical-offset="510">
-          <caret line="20" column="71" selection-start-line="20" selection-start-column="71" selection-end-line="20" selection-end-column="71" />
+        <state vertical-scroll-proportion="0.4566745" vertical-offset="240" max-vertical-offset="1680">
+          <caret line="29" column="44" selection-start-line="29" selection-start-column="44" selection-end-line="29" selection-end-column="44" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#36#0" expanded="true" />
           </folding>
         </state>
       </provider>
