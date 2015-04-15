@@ -40,17 +40,17 @@ class FileUploadView(views.APIView):
             destination.write(chunk)
             destination.close()
 
-        thumbnail = request.META.get('HTTP_THUMBNAIL')
-        thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
-        str1 = zlib.decompress(base64.b64decode(thumbnail))
-        destination1 = open('/home/ubuntu/files/'+thumbnail_name, 'wb+')
-        destination1.write(str1)
-        destination1.close()
+        #thumbnail = request.META.get('HTTP_THUMBNAIL')
+        #thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
+        #str1 = zlib.decompress(base64.b64decode(thumbnail))
+        #destination1 = open('/home/ubuntu/files/'+thumbnail_name, 'wb+')
+        #destination1.write(str1)
+        #destination1.close()
 
         # ...
         # do some stuff with uploaded file
         # ...
-        return Response(up_file.name, status.HTTP_201_CREATED)
+        return Response("test", status.HTTP_201_CREATED)
 
 
 

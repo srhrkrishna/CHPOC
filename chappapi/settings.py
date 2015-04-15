@@ -90,8 +90,9 @@ USE_TZ = True
 
 BASE = os.path.abspath(os.path.dirname(__name__))
 
-STATICFILES_DIRS = (os.path.join(BASE, "static"),)
+# STATICFILES_DIRS = (os.path.join(BASE, "static"),)
 STATIC_URL = '/static/'
+STATIC_ROOT = "/var/www/CHPOC/static/"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
