@@ -1,3 +1,6 @@
+# ...
+# imports
+# ...
 from wsgiref.util import FileWrapper
 from django.http import HttpResponse
 from rest_framework import views, status
@@ -7,13 +10,13 @@ import zlib
 import base64
 import keystoneclient.v2_0.client as ksclient
 import httplib
+import json
 
 
 class VideoView(views.APIView):
     permission_classes = []
 
-    def post(self, request, *args, **kwargs):
-
+    def get(self, request, *args, **kwargs):
         keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
                            username="sreehari.parameswaran@cognizant.com",
                            password="GbU4ytu0",
@@ -39,15 +42,17 @@ class FileUploadView(views.APIView):
 
     def put(self, request):
         
-        # try:
-        #     auth_token = request.META.get('HTTP_X_A12N')
-        # except:
-        #     return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+        try:
+            auth_token = request.META.get('HTTP_X_A12N')
+            if not auth_token:
+                return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
-        keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-                           username="sreehari.parameswaran@cognizant.com",
-                           password="GbU4ytu0",
-                           tenant_name="sreehari.parameswaran@cognizant.com")
+        # keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
+        #                    username="sreehari.parameswaran@cognizant.com",
+        #                    password="GbU4ytu0",
+        #                    tenant_name="sreehari.parameswaran@cognizant.com")
 
         up_file = request.data.get('file', '')
         file_path = '/home/ubuntu/files/'
@@ -55,7 +60,6 @@ class FileUploadView(views.APIView):
 
         # save video to local directory
         destination = open(video_path, 'wb+')
-        
         for chunk in up_file.chunks():
             destination.write(chunk)
             destination.close()
@@ -73,35 +77,75 @@ class FileUploadView(views.APIView):
         # store video and thumbnail in swift
         # ...
         h = httplib.HTTPConnection("23.246.246.66:8080")
-        headers_content = {"X-Auth-Token": keystone.auth_token, "X-Object-Meta-Thumbnail": thumbnail_name}
+        headers_content = {"X-Auth-Token": auth_token, "X-Object-Meta-Thumbnail": thumbnail_name}
         h.request('PUT', '/swift/v1/Test/'+up_file.name, open(video_path, 'rb'), headers_content)
 
         h2 = httplib.HTTPConnection("23.246.246.66:8080")
-        headers_content1 = {"X-Auth-Token": keystone.auth_token, "X-Object-Meta-VideoFileName": up_file.name}
+        headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
         h2.request('PUT', '/swift/v1/Test/'+thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
-
+        # return Response('',status.HTTP_201_CREATED)
         return Response(up_file.name, status.HTTP_201_CREATED)
-
 
 
 class UserView(views.APIView):
     permission_classes = []
 
     def post(self, request, *args, **kwargs):
-        # ...
-        # get auth-token
-        # ...
-        keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-                           username="sreehari.parameswaran@cognizant.com",
-                           password="GbU4ytu0",
-                           tenant_name="sreehari.parameswaran@cognizant.com")
-        response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
-        response['x-a12n'] = keystone.auth_token
-        return response
+        try:
+            gateway_login = json.loads(request.body)
+
+            if not gateway_login["ConsumerNumber"]:
+                return Response('', status.HTTP_401_UNAUTHORIZED)
+
+            if not gateway_login["Password"]:
+                return Response('', status.HTTP_401_UNAUTHORIZED)
+            else:
+                password = gateway_login["Password"]
+            # ...
+            # get auth-token
+            # ...
+            keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
+                               username=gateway_login["ConsumerNumber"],
+                               password=password,
+                               tenant_name="sreehari.parameswaran@cognizant.com")
+            response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
+            response['x-a12n'] = keystone.auth_token
+            return response
+        except:
+            return Response('',status.HTTP_401_UNAUTHORIZED)
+
+
+class GatewayView(views.APIView):
+    permission_classes = []
+
+    def post(self, request, *args, **kwargs):
+        try:
+            gateway_login = json.loads(request.body)
+
+            if not gateway_login["ConsumerNumber"]:
+                return Response('', status.HTTP_401_UNAUTHORIZED)
+
+            if not gateway_login["SmartKey"]:
+                return Response('', status.HTTP_401_UNAUTHORIZED)
+            else:
+                password = gateway_login["SmartKey"]
+            # ...
+            # get auth-token
+            # ...
+            keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
+                               username=gateway_login["ConsumerNumber"],
+                               password=password,
+                               tenant_name="sreehari.parameswaran@cognizant.com")
+            response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
+            response['x-a12n'] = keystone.auth_token
+            return response
+        except:
+            return Response('',status.HTTP_401_UNAUTHORIZED)
 
 
 class List(views.APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
+
         return Response(data='{"Links":["TestVideo1.mp4", "Test2.mp4"]}', status=status.HTTP_200_OK)
