@@ -13,46 +13,48 @@ import httplib
 import json
 
 
+class AuthToken(object):
+    @staticmethod
+    def get_auth_token(request):
+        try:
+            auth_token = request.META.get('HTTP_X_A12N')
+            if not auth_token:
+                return ''
+            else:
+                return auth_token
+        except:
+            return ''
+
+
 class VideoView(views.APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
-        keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-                           username="sreehari.parameswaran@cognizant.com",
-                           password="GbU4ytu0",
-                           tenant_name="sreehari.parameswaran@cognizant.com")
+        auth_token = AuthToken.get_auth_token(request)
+        if not auth_token:
+            print auth_token
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+        print auth_token
+        file_name = request.META.get('HTTP_FILENAME')
+        print file_name
+        if not file_name:
+            return Response('', status.HTTP_400_BAD_REQUEST)
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
-        headers_content = {"X-Auth-Token": keystone.auth_token}
-        h.request('GET', '/swift/v1/Test/test.mp4', '', headers_content)
+        headers_content = {"X-Auth-Token": auth_token}
+        h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
         response = h.getresponse()
-        #
-        # print response.status
-        # for header in response.getheaders():
-        #     print header
-        return  HttpResponse(response.read(), status.HTTP_200_OK)
-        # video_file = open('/home/ubuntu/files/test.mp4', 'rb')
-        # response = HttpResponse(FileWrapper(video_file), content_type='application/video')
-        # response['Content-Disposition'] = 'attachment; filename="%s"' % 'test1.mp4'
-        # return response
+
+        return HttpResponse(response.read(), status.HTTP_200_OK)
 
 
 class FileUploadView(views.APIView):
     parser_classes = (FileUploadParser, )
 
     def put(self, request):
-        
-        try:
-            auth_token = request.META.get('HTTP_X_A12N')
-            if not auth_token:
-                return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
-        except:
+        auth_token = AuthToken.get_auth_token(request)
+        if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
-
-        # keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-        #                    username="sreehari.parameswaran@cognizant.com",
-        #                    password="GbU4ytu0",
-        #                    tenant_name="sreehari.parameswaran@cognizant.com")
 
         up_file = request.data.get('file', '')
         file_path = '/home/ubuntu/files/'
@@ -78,11 +80,11 @@ class FileUploadView(views.APIView):
         # ...
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token, "X-Object-Meta-Thumbnail": thumbnail_name}
-        h.request('PUT', '/swift/v1/Test/'+up_file.name, open(video_path, 'rb'), headers_content)
+        h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
 
         h2 = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
-        h2.request('PUT', '/swift/v1/Test/'+thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
+        h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
         # return Response('',status.HTTP_201_CREATED)
         return Response(up_file.name, status.HTTP_201_CREATED)
 
@@ -105,14 +107,14 @@ class UserView(views.APIView):
             # get auth-token
             # ...
             keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-                               username=gateway_login["ConsumerNumber"],
-                               password=password,
-                               tenant_name="sreehari.parameswaran@cognizant.com")
+                                       username=gateway_login["ConsumerNumber"],
+                                       password=password,
+                                       tenant_name="sreehari.parameswaran@cognizant.com")
             response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
             response['x-a12n'] = keystone.auth_token
             return response
         except:
-            return Response('',status.HTTP_401_UNAUTHORIZED)
+            return Response('', status.HTTP_401_UNAUTHORIZED)
 
 
 class GatewayView(views.APIView):
@@ -133,19 +135,28 @@ class GatewayView(views.APIView):
             # get auth-token
             # ...
             keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
-                               username=gateway_login["ConsumerNumber"],
-                               password=password,
-                               tenant_name="sreehari.parameswaran@cognizant.com")
+                                       username=gateway_login["ConsumerNumber"],
+                                       password=password,
+                                       tenant_name="sreehari.parameswaran@cognizant.com")
             response = Response(data='{}', status=status.HTTP_202_ACCEPTED)
             response['x-a12n'] = keystone.auth_token
             return response
         except:
-            return Response('',status.HTTP_401_UNAUTHORIZED)
+            return Response('', status.HTTP_401_UNAUTHORIZED)
 
 
 class List(views.APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
+        auth_token = AuthToken.get_auth_token(request)
+        if not auth_token:
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
-        return Response(data='{"Links":["TestVideo1.mp4", "Test2.mp4"]}', status=status.HTTP_200_OK)
+        h = httplib.HTTPConnection("23.246.246.66:8080")
+        headers_content = {"X-Auth-Token": auth_token, "Accept":"application/json"}
+        h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
+        response = h.getresponse()
+        # print response.HTTP_CONTENT_TYPE
+        obj = json.loads(response.read())
+        return HttpResponse(obj, status=status.HTTP_200_OK)
