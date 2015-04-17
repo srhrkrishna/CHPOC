@@ -16,14 +16,17 @@
         return xhr;
     };
 
-    apiCall.request = function makeCorsRequest() {  
+    apiCall.request = function makeCorsRequest(link) {  
 
-        var xhr = createCORSRequest('POST', url);
+        var xhr = createCORSRequest('GET', url);
         if (!xhr) {
             console.log('CORS not supported');
             return;
         }
         apiCall.isDownloading = true;
+
+        xhr.setRequestHeader("x-a12n", App_Constants.auth);
+        xhr.setRequestHeader("filename", link);
 
         xhr.onload = function () {
             var text = xhr.response;
@@ -36,7 +39,7 @@
             var a = document.createElement('a');
             a.href = fileURL;
             a.target = '_blank';
-            a.download = 'test.mp4';
+            a.download = link;
             document.body.appendChild(a);
             a.click();
             console.log('XMLHTTPRequest Success.');
