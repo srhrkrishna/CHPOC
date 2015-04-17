@@ -113,5 +113,12 @@ CORS_ALLOW_HEADERS = (
         'accept',
         'origin',
         'authorization',
-        'x-csrftoken'
+        'x-csrftoken',
+        'x-a12n',
+        'filename',
+        'thumbnail',
+        'thumbnailname'
+    )
+CORS_EXPOSE_HEADERS = (
+        'x-a12n'
     )
