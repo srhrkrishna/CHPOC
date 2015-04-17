@@ -27,16 +27,28 @@ class AuthToken(object):
 
 
 class VideoView(views.APIView):
+    """
+    Download Video file
+    """
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
+        """
+        ---
+        omit_serializer: true
+        parameters:
+            - name: filename
+              paramType: header
+            - name: x-a12n
+              paramType: header
+        """
         auth_token = AuthToken.get_auth_token(request)
         if not auth_token:
-            print auth_token
+            # print auth_token
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
-        print auth_token
+        # print auth_token
         file_name = request.META.get('HTTP_FILENAME')
-        print file_name
+        # print file_name
         if not file_name:
             return Response('', status.HTTP_400_BAD_REQUEST)
 
@@ -157,6 +169,5 @@ class List(views.APIView):
         headers_content = {"X-Auth-Token": auth_token, "Accept":"application/json"}
         h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
         response = h.getresponse()
-        # print response.HTTP_CONTENT_TYPE
         obj = json.loads(response.read())
-        return HttpResponse(obj, status=status.HTTP_200_OK)
+        return Response(obj,status=status.HTTP_200_OK,headers={"Content-Type":"application/json"})
