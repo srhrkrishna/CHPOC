@@ -11,6 +11,7 @@ import base64
 import keystoneclient.v2_0.client as ksclient
 import httplib
 import json
+import re
 
 
 class AuthToken(object):
@@ -44,7 +45,6 @@ class VideoView(views.APIView):
         """
         auth_token = AuthToken.get_auth_token(request)
         if not auth_token:
-            # print auth_token
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
         # print auth_token
         file_name = request.META.get('HTTP_FILENAME')
@@ -56,7 +56,7 @@ class VideoView(views.APIView):
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
         response = h.getresponse()
-
+        # print response.getheaders()
         return HttpResponse(response.read(), status.HTTP_200_OK)
 
 
@@ -64,45 +64,57 @@ class FileUploadView(views.APIView):
     parser_classes = (FileUploadParser, )
 
     def put(self, request):
-        auth_token = AuthToken.get_auth_token(request)
-        if not auth_token:
-            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+        try:
+            auth_token = AuthToken.get_auth_token(request)
+            if not auth_token:
+                return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
-        up_file = request.data.get('file', '')
-        file_path = '/home/ubuntu/files/'
-        video_path = file_path + up_file.name
+            up_file = request.data.get('file', '')
+            file_path = '/home/ubuntu/files/'
+            video_path = file_path + up_file.name
 
-        # save video to local directory
-        destination = open(video_path, 'wb+')
-        for chunk in up_file.chunks():
-            destination.write(chunk)
-        destination.close()
+            # save video to local directory
+            destination = open(video_path, 'wb+')
+            for chunk in up_file.chunks():
+                destination.write(chunk)
+            destination.close()
 
-        # save thumbnail to local directory
-        thumbnail = request.META.get('HTTP_THUMBNAIL')
-        thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
-        headers_content = {"X-Auth-Token": auth_token}
+            # save thumbnail to local directory
+            thumbnail = request.META.get('HTTP_THUMBNAIL')
+            thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
+            headers_content = {"X-Auth-Token": auth_token}
 
-        if thumbnail and thumbnail_name:
-            # print thumbnail_name
-            str1 = zlib.decompress(base64.b64decode(thumbnail))
-            thumbnail_path = file_path + thumbnail_name
-            destination1 = open(thumbnail_path, 'wb+')
-            destination1.write(str1)
-            destination1.close()
-            headers_content["X-Object-Meta-Thumbnail"] = thumbnail_name
-            h2 = httplib.HTTPConnection("23.246.246.66:8080")
-            headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
-            h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
+            if thumbnail and thumbnail_name:
+                # print thumbnail_name
+                str1 = zlib.decompress(base64.b64decode(thumbnail))
+                thumbnail_path = file_path + thumbnail_name
+                destination1 = open(thumbnail_path, 'wb+')
+                destination1.write(str1)
+                destination1.close()
+                headers_content["X-Object-Meta-Thumbnail"] = thumbnail_name
+                h2 = httplib.HTTPConnection("23.246.246.66:8080")
+                headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
+                h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
 
-        # print up_file.name
-        # ...
-        # store video and thumbnail in swift
-        # ...
-        h = httplib.HTTPConnection("23.246.246.66:8080")
-        h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
+            # print up_file.name
+            # ...
+            # store video and thumbnail in swift
+            # ...
+            regex = re.compile('^HTTP_')
+            metadata = dict((regex.sub('', header), value) for (header, value)
+                in request.META.items() if header.startswith('HTTP_X_CH_'))
 
-        return Response('', status.HTTP_201_CREATED)
+            for header in metadata:
+                headers_content.update({header: metadata.get(header)})
+
+            # print headers_content
+            h = httplib.HTTPConnection("23.246.246.66:8080")
+            h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
+            response = h.getresponse()
+            h.close()
+            return Response('', response.status)
+        except:
+            return Response('', status.HTTP_400_BAD_REQUEST)
 
 
 class UserView(views.APIView):
