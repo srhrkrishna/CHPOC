@@ -76,7 +76,7 @@ class FileUploadView(views.APIView):
         destination = open(video_path, 'wb+')
         for chunk in up_file.chunks():
             destination.write(chunk)
-            destination.close()
+        destination.close()
 
         # save thumbnail to local directory
         thumbnail = request.META.get('HTTP_THUMBNAIL')
@@ -102,8 +102,7 @@ class FileUploadView(views.APIView):
         h = httplib.HTTPConnection("23.246.246.66:8080")
         h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
 
-        # return Response('',status.HTTP_201_CREATED)
-        return Response(up_file.name, status.HTTP_201_CREATED)
+        return Response('', status.HTTP_201_CREATED)
 
 
 class UserView(views.APIView):
