@@ -20,13 +20,12 @@
             $scope.currentUser = args.username;
         }
         videoService.getVideos(function(data){
-            var thisData = JSON.parse(data);
-            $scope.links = thisData.Links;
+            $scope.links = data;
         });
     });
     
-    $scope.downloadFile = function() {
-        openstackService.request();
+    $scope.downloadFile = function(link) {
+        openstackService.request(link);
     }
 
     //$scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];

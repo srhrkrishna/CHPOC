@@ -48,12 +48,15 @@
                     <tr>
                         <th>Name
                         </th>
-                        <th>Download link
+                        <th>Size in Bytes
                         </th>
+                        <th>Download link
+                        </th>                        
                     </tr>
                     <tr ng-repeat="link in links">
-                        <td>{{ link }}</td>
-                        <td><a href="#" ng-click="downloadFile()">Download Link</a></td>
+                        <td>{{ link.name }}</td>
+                        <td>{{ link.bytes }}</td>
+                        <td><a href="#" ng-click="downloadFile(link.name)">Download Link</a></td>
                     </tr>
                 </table>
             </div>
