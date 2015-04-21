@@ -50,14 +50,14 @@ class VideoView(views.APIView):
         file_name = request.META.get('HTTP_FILENAME')
         # print file_name
         if not file_name:
-            return Response('', status.HTTP_400_BAD_REQUEST)
+            return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
         response = h.getresponse()
         # print response.getheaders()
-        return HttpResponse(response.read(), status.HTTP_200_OK)
+        return HttpResponse(response.read(), response.status)
 
 
 class FileUploadView(views.APIView):
@@ -100,18 +100,17 @@ class FileUploadView(views.APIView):
             # ...
             # store video and thumbnail in swift
             # ...
-            regex = re.compile('^HTTP_')
+            regex = re.compile('^HTTP__X_CH_')
             metadata = dict((regex.sub('', header), value) for (header, value)
                 in request.META.items() if header.startswith('HTTP_X_CH_'))
 
             for header in metadata:
-                headers_content.update({header: metadata.get(header)})
+                headers_content.update({'X-Object-Meta-' + header: metadata.get(header)})
 
             # print headers_content
             h = httplib.HTTPConnection("23.246.246.66:8080")
             h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
             response = h.getresponse()
-            h.close()
             return Response('', response.status)
         except:
             return Response('', status.HTTP_400_BAD_REQUEST)
