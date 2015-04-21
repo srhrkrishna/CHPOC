@@ -56,16 +56,22 @@ class VideoView(views.APIView):
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
         response = h.getresponse()
+        # print file_name
+        destination = open('/home/ubuntu/files/temp_' + file_name, 'wb+')
+        destination.write(response.read())
+        destination.close()
 
-        regex = re.compile('^HTTP__X_CH_')
-        metadata = dict((regex.sub('', header), value) for (header, value)
-                        in request.META.items() if header.startswith('HTTP_X_CH_'))
-
-        response_headers = {header: value for (header, value) in response.getheaders()}
-        for header in metadata:
-            response_headers.update({str(header.replace('x-object-meta-http-', '')): metadata.get(header)})
-        return Response(response.read(), response.status, headers=response_headers)
-
+        video_file = open('/home/ubuntu/files/temp_' + file_name, 'rb')
+        # regex = re.compile('^HTTP__X_CH_')
+        # metadata = dict((regex.sub('', header), value) for (header, value)
+        #                 in request.META.items() if header.startswith('HTTP_X_CH_'))
+        #
+        # response_headers = {header: value for (header, value) in response.getheaders()}
+        # for header in metadata:
+        #     response_headers.update({str(header.replace('x-object-meta-http-', '')): metadata.get(header)})
+        obj = HttpResponse(FileWrapper(video_file), content_type='application/video', status = response.status)
+        obj['Content-Disposition'] = 'attachment; filename="%s"' % (file_name)
+        return obj
 
 class ThumbnailView(views.APIView):
     """
