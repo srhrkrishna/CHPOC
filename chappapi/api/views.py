@@ -56,11 +56,50 @@ class VideoView(views.APIView):
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
         response = h.getresponse()
-        # print response.getheaders()
+
+        regex = re.compile('^HTTP__X_CH_')
+        metadata = dict((regex.sub('', header), value) for (header, value)
+                        in request.META.items() if header.startswith('HTTP_X_CH_'))
+
+        response_headers = {header: value for (header, value) in response.getheaders()}
+        for header in metadata:
+            response_headers.update({str(header.replace('x-object-meta-http-', '')): metadata.get(header)})
+        return Response(response.read(), response.status, headers=response_headers)
+
+
+class ThumbnailView(views.APIView):
+    """
+    Download Thumbnail file
+    """
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        """
+        ---
+        omit_serializer: true
+        parameters:
+            - name: filename
+              paramType: header
+            - name: x-a12n
+              paramType: header
+        """
+        auth_token = AuthToken.get_auth_token(request)
+        if not auth_token:
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+        # print auth_token
+        file_name = request.META.get('HTTP_FILENAME')
+        # print file_name
+        if not file_name:
+            return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+
+        h = httplib.HTTPConnection("23.246.246.66:8080")
+        headers_content = {"X-Auth-Token": auth_token}
+        h.request('GET', '/swift/v1/Thumbnails/'+file_name, '', headers_content)
+        response = h.getresponse()
         return HttpResponse(response.read(), response.status)
 
 
-class FileUploadView(views.APIView):
+class VideoUploadView(views.APIView):
     parser_classes = (FileUploadParser, )
 
     def put(self, request):
@@ -111,7 +150,41 @@ class FileUploadView(views.APIView):
             h = httplib.HTTPConnection("23.246.246.66:8080")
             h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
             response = h.getresponse()
-            return Response('', response.status)
+            return Response(response.read(), response.status)
+        except:
+            return Response('', status.HTTP_400_BAD_REQUEST)
+
+
+class ThumbnailUploadView(views.APIView):
+    parser_classes = (FileUploadParser, )
+
+    def put(self, request):
+        try:
+            auth_token = AuthToken.get_auth_token(request)
+            if not auth_token:
+                return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+
+            up_file = request.data.get('file', '')
+            file_path = '/home/ubuntu/files/'
+            thumbnail_path = file_path + up_file.name
+
+            headers_content = {"X-Auth-Token": auth_token}
+
+            # save video to local directory
+            destination = open(thumbnail_path, 'wb+')
+            for chunk in up_file.chunks():
+                destination.write(chunk)
+            destination.close()
+
+            # print up_file.name
+            # ...
+            # store thumbnail in swift
+            # ...
+            h = httplib.HTTPConnection("23.246.246.66:8080")
+            print up_file.name
+            h.request('PUT', '/swift/v1/Thumbnails/' + up_file.name, open(thumbnail_path, 'rb'), headers_content)
+            response = h.getresponse()
+            return Response(response.read(), response.status)
         except:
             return Response('', status.HTTP_400_BAD_REQUEST)
 
@@ -185,4 +258,4 @@ class List(views.APIView):
         h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
         response = h.getresponse()
         obj = json.loads(response.read())
-        return Response(obj,status=status.HTTP_200_OK,headers={"Content-Type":"application/json"})
+        return Response(obj, status=status.HTTP_200_OK, headers={"Content-Type": "application/json"})
