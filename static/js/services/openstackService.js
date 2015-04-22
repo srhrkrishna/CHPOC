@@ -3,13 +3,13 @@
     var apiCall = { 
         isDownloading: false
         , request: null
-    }, url = App_Constants.url + '/video/';
+    }, url = App_Constants.url + '/video/?' + new Date();
 
     function createCORSRequest(method, url) {
         var xhr = new XMLHttpRequest();
-        xhr.responseType = 'arraybuffer';
         if ("withCredentials" in xhr) {
             xhr.open(method, url, true);
+            xhr.responseType = 'arraybuffer';
         } else {
             xhr = null;
         }
