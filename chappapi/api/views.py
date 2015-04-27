@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from rest_framework import views, status
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
+from urlparse import parse_qs
 import zlib
 import base64
 import keystoneclient.v2_0.client as ksclient
@@ -265,3 +266,42 @@ class List(views.APIView):
         response = h.getresponse()
         obj = json.loads(response.read())
         return Response(obj, status=status.HTTP_200_OK, headers={"Content-Type": "application/json"})
+
+
+class MetadataView(views.APIView):
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        auth_token = AuthToken.get_auth_token(request)
+        if not auth_token:
+            return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
+
+        # Get file name
+        try:
+            parsed_query_string = parse_qs(request.GET.urlencode())
+            file_name = parsed_query_string.get('filename')[0]
+            # print file_name
+            if not file_name:
+                return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+        except BaseException:
+            return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+
+        # Get Headers
+        h = httplib.HTTPConnection("23.246.246.66:8080")
+        headers_content = {"X-Auth-Token": auth_token, "Accept":"application/json"}
+        h.request('HEAD', '/swift/v1/Videos/' + file_name, '', headers_content)
+        response = h.getresponse()
+        response_headers = response.getheaders()
+
+        # Extract Metadata headers alone
+        regex = re.compile('^x-object-meta-http-x-ch-')
+        metadata = dict((regex.sub('', header), value) for (header, value)
+                        in response_headers if header.startswith('x-object-meta-http-x-ch-'))
+
+        modified_response_headers = {}
+        for header in metadata:
+            modified_response_headers.update({header: metadata.get(header)})
+            # print header
+
+        # obj = json.loads(response.read())
+        return Response(modified_response_headers, status=status.HTTP_200_OK, headers={"Content-Type": "application/json"})

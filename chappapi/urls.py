@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^user/login', views.UserView.as_view()),
     url(r'^list/', views.List.as_view()),
     url(r'^upload/', views.VideoUploadView.as_view()),
-    url(r'^uploadthumbnail/', views.ThumbnailUploadView.as_view())
+    url(r'^uploadthumbnail/', views.ThumbnailUploadView.as_view()),
+    url(r'^metadata/', views.MetadataView.as_view())
 ]
