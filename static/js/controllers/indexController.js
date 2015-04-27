@@ -28,6 +28,20 @@
         openstackService.request(link);
     }
 
+    $scope.viewMetadata = function(name) {
+        //openstackService.metadata();
+        $modal.open({
+            templateUrl: 'html/metadata.html',
+            controller: 'metadataController',
+            backdrop: 'static',
+            keyboard: false,
+            size: 'lg',
+            resolve: {
+                fileInfo: function() { return name; }
+            }
+        });
+    }    
+
     //$scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];
 
 }]);

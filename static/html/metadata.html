@@ -1,0 +1,24 @@
+﻿<form name="form" novalidate data-backdrop="static" ng-init="loadMetadata()">
+    <div id="metadataForm" class="modal-content">
+        <div class="modal-header">
+            <h4>Meta Data</h4>
+        </div>
+        <div class="modal-body" style="height: 400px; overflow-y:auto;">
+            <div>
+                <table  class="table table-bordered" style="width: 100%;">
+                    <tr>
+                        <th style="width: 20%;">Key</th>
+                        <th style="width: 79%;">Value</th>
+                    </tr>                    
+                    <tr ng-repeat="metadata in metadatas">
+                        <td>{{ metadata.Key }}</td>
+                        <td><div>{{ metadata.Value }}</div></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="closePopup()">Close</button>
+        </div>
+    </div>
+</form>
