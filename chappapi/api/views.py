@@ -298,9 +298,9 @@ class MetadataView(views.APIView):
         metadata = dict((regex.sub('', header), value) for (header, value)
                         in response_headers if header.startswith('x-object-meta-http-x-ch-'))
 
-        modified_response_headers = {}
+        modified_response_headers = []
         for header in metadata:
-            modified_response_headers.update({header: metadata.get(header)})
+            modified_response_headers.append({"Key": header, "Value": metadata.get(header)})
             # print header
 
         # obj = json.loads(response.read())
