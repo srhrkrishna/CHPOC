@@ -2,6 +2,7 @@
 # imports
 # ...
 from wsgiref.util import FileWrapper
+import datetime
 from django.http import HttpResponse
 from rest_framework import views, status
 from rest_framework.parsers import FileUploadParser
@@ -121,6 +122,7 @@ class VideoUploadView(views.APIView):
 
     def put(self, request):
         try:
+            logfile = open('/home/ubuntu/files/log.txt', 'wb+')
             auth_token = AuthToken.get_auth_token(request)
             if not auth_token:
                 return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
@@ -129,11 +131,14 @@ class VideoUploadView(views.APIView):
             file_path = '/home/ubuntu/files/'
             video_path = file_path + up_file.name
 
+            logfile.write('Video Upload started for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
+
             # save video to local directory
             destination = open(video_path, 'wb+')
             for chunk in up_file.chunks():
                 destination.write(chunk)
             destination.close()
+            logfile.write('Video Upload completed for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
 
             # save thumbnail to local directory
             thumbnail = request.META.get('HTTP_THUMBNAIL')
@@ -152,6 +157,7 @@ class VideoUploadView(views.APIView):
                 headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
                 h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
 
+            logfile.write('Video Upload to swift started for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
             # print up_file.name
             # ...
             # store video and thumbnail in swift
@@ -167,6 +173,9 @@ class VideoUploadView(views.APIView):
             h = httplib.HTTPConnection("23.246.246.66:8080")
             h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
             response = h.getresponse()
+            logfile.write('Video Upload to swift completed for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
+            logfile.flush()
+            logfile.close()
             return Response(response.read(), response.status)
         except:
             return Response('', status.HTTP_400_BAD_REQUEST)
