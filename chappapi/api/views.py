@@ -48,9 +48,19 @@ class VideoView(views.APIView):
         if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
         # print auth_token
-        file_name = request.META.get('HTTP_FILENAME')
-        # print file_name
-        if not file_name:
+        # file_name = request.META.get('HTTP_FILENAME')
+        # # print file_name
+        # if not file_name:
+        #     return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+
+        # Get file name
+        try:
+            parsed_query_string = parse_qs(request.GET.urlencode())
+            file_name = parsed_query_string.get('filename')[0]
+            # print file_name
+            if not file_name:
+                return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+        except BaseException:
             return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
