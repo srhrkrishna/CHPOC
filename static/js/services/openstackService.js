@@ -3,7 +3,7 @@
     var apiCall = { 
         isDownloading: false
         , request: null
-    }, baseUrl = App_Constants.url + '/video?', url;
+    }, baseUrl = App_Constants.url + '/video/', url;
 
     function createCORSRequest(method, url) {
         var xhr = new XMLHttpRequest();
@@ -18,7 +18,7 @@
 
     apiCall.request = function makeCorsRequest(link) {  
 
-        url = baseUrl + 'filename=' + link, 
+        url = baseUrl + link,
         xhr = createCORSRequest('GET', url);
 
         if (!xhr) {

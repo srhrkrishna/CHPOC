@@ -5,6 +5,7 @@ from wsgiref.util import FileWrapper
 import datetime
 from django.http import HttpResponse
 from rest_framework import views, status
+from rest_framework.decorators import detail_route
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from urlparse import parse_qs
@@ -41,23 +42,18 @@ class VideoView(views.APIView):
         omit_serializer: true
         parameters:
             - name: filename
-              paramType: header
+              paramType: path
             - name: x-a12n
               paramType: header
         """
         auth_token = AuthToken.get_auth_token(request)
         if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
-        # print auth_token
-        # file_name = request.META.get('HTTP_FILENAME')
-        # # print file_name
-        # if not file_name:
-        #     return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
-        # Get file name
         try:
             parsed_query_string = parse_qs(request.GET.urlencode())
-            file_name = parsed_query_string.get('filename')[0]
+            # file_name = parsed_query_string.get('filename')[0]
+            file_name = kwargs['filename']
             # print file_name
             if not file_name:
                 return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
@@ -74,16 +70,11 @@ class VideoView(views.APIView):
         destination.close()
 
         video_file = open('/home/ubuntu/files/temp_' + file_name, 'rb')
-        # regex = re.compile('^HTTP__X_CH_')
-        # metadata = dict((regex.sub('', header), value) for (header, value)
-        #                 in request.META.items() if header.startswith('HTTP_X_CH_'))
-        #
-        # response_headers = {header: value for (header, value) in response.getheaders()}
-        # for header in metadata:
-        #     response_headers.update({str(header.replace('x-object-meta-http-', '')): metadata.get(header)})
+
         obj = HttpResponse(FileWrapper(video_file), content_type='application/video', status = response.status)
         obj['Content-Disposition'] = 'attachment; filename="%s"' % (file_name)
         return obj
+
 
 class ThumbnailView(views.APIView):
     """
@@ -207,7 +198,7 @@ class ThumbnailUploadView(views.APIView):
             # store thumbnail in swift
             # ...
             h = httplib.HTTPConnection("23.246.246.66:8080")
-            print up_file.name
+            # print up_file.name
             h.request('PUT', '/swift/v1/Thumbnails/' + up_file.name, open(thumbnail_path, 'rb'), headers_content)
             response = h.getresponse()
             return Response(response.read(), response.status)
@@ -291,14 +282,24 @@ class MetadataView(views.APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
+        """
+        ---
+        omit_serializer: true
+        parameters:
+            - name: filename
+              paramType: path
+            - name: x-a12n
+              paramType: header
+        """
         auth_token = AuthToken.get_auth_token(request)
         if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
         # Get file name
         try:
-            parsed_query_string = parse_qs(request.GET.urlencode())
-            file_name = parsed_query_string.get('filename')[0]
+            # parsed_query_string = parse_qs(request.GET.urlencode())
+            # file_name = parsed_query_string.get('filename')[0]
+            file_name = kwargs['filename']
             # print file_name
             if not file_name:
                 return Response('File name not provided', status.HTTP_400_BAD_REQUEST)

@@ -58,3 +58,4 @@ target/
 
 # Migrated DB
 db.sqlite3
+/.project
