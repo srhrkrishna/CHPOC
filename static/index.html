@@ -5,6 +5,7 @@
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <title>Open Stack</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
@@ -18,18 +19,19 @@
     <div id="wrapper" ng-controller="indexController" ng-init="showLogin()">
 
         <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a>Open Stack
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <!--<div class="container-fluid">-->
+            <!--<ul class="row col-xs-10">-->
+                <!--<li>-->
+                    <!--<a>Open Stack-->
+                    <!--</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
         <!-- Sidebar -->
 
         <!-- Page Content -->
-        <div id="page-content-wrapper">
+        <div class = "container-fluid">
+            <div class="row col-xs-12">
             <div style="width: 100%; float: left;">
                 <div style="float: right">
                     <h6 class="bold">Welcome, {{ currentUser }} !</h6>
@@ -50,14 +52,16 @@
                         </th>
                         <th>Size in Bytes
                         </th>
+                        <th>Last Modified</th>
                         <th>Download link
                         </th>
                         <th>Meta Data
                         </th>                        
                     </tr>
-                    <tr ng-repeat="link in links">
+                    <tr ng-repeat="link in links | orderBy:'-last_modified'">
                         <td>{{ link.name }}</td>
                         <td>{{ link.bytes }}</td>
+                        <td>{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
                         <td><a href="#" ng-click="downloadFile(link.name)">Download Link</a></td>
                         <td><a href="#" ng-click="viewMetadata(link.name)">View</a></td>                        
                     </tr>
@@ -65,7 +69,7 @@
             </div>
         </div>
         <!-- Page Content -->
-
+        </div>
     </div>
 
     <!-- Libs - Starts Here -->

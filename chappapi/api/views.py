@@ -130,7 +130,7 @@ class VideoUploadView(views.APIView):
                 destination.write(chunk)
             destination.close()
             logfile.write('Video Upload completed for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
-
+            print request.META
             # save thumbnail to local directory
             thumbnail = request.META.get('HTTP_THUMBNAIL')
             thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
