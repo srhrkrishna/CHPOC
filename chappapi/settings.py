@@ -124,5 +124,5 @@ CORS_ALLOW_HEADERS = (
         'thumbnailname'
     )
 CORS_EXPOSE_HEADERS = (
-        'x-a12n'
+        'x-a12n',
     )
