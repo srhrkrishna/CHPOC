@@ -43,11 +43,7 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [],
-    'PAGE_SIZE': 10,
-    'TEST_REQUEST_RENDERER_CLASSES': (
-        'rest_framework.renderers.MultiPartRenderer',
-        'rest_framework.renderers.JSONRenderer'
-    )
+    'PAGE_SIZE': 10
 }
 
 MIDDLEWARE_CLASSES = (
