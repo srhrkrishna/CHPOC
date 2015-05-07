@@ -50,9 +50,9 @@
                     <tr>
                         <th>Name
                         </th>
-                        <th>Size in Bytes
+                        <th>Size in MB
                         </th>
-                        <th>Last Modified</th>
+                        <th>Uploaded Date</th>
                         <th>Download link
                         </th>
                         <th>Meta Data
@@ -60,7 +60,7 @@
                     </tr>
                     <tr ng-repeat="link in links | orderBy:'-last_modified'">
                         <td>{{ link.name }}</td>
-                        <td>{{ link.bytes }}</td>
+                        <td>{{ link.bytes / (1024 * 1024) | number:2 }}</td>
                         <td>{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
                         <td><a href="#" ng-click="downloadFile(link.name)">Download Link</a></td>
                         <td><a href="#" ng-click="viewMetadata(link.name)">View</a></td>                        
