@@ -18,14 +18,20 @@
     <header id="header">
         <div class="inner-content">
             <div class="logo left">
-                <img src="./images/cognizant-logo.jpg" style="width: 150px; height: 60px;" />
+                <img src="./images/ctslogo.png" style="width: 80px; height: 60px;" />
+            </div>
+            <!--<div class="logo left">
+                <img src="./images/comtech.png" style="width: 40px; height: 40px;" />
+            </div>-->
+            <div class="logo left title">
+                <span>COMTECH - PDS</span>
             </div>
             <div class="user-info right">
                 <span class="glyphicon glyphicon-off btn-lg" aria-hidden="true"></span>
             </div>
         </div>
     </header>
-    <section style="background-color:#A9E09F;">
+    <section>
         <div id="wrapper" ng-controller="indexController" ng-init="showLogin()">
 
             <!-- Sidebar -->
@@ -46,7 +52,7 @@
                         <h6 class="bold">Welcome, {{ currentUser }} !</h6>
                     </div>
                 </div>
-                <h3>Video Feed</h3>
+                <h3>RDK Connected Home</h3>
                 <div class='progress-container'>
                     <div ng-show="apiCall.isDownloading">
                         <progressbar class="progress-striped active" value="100" animate="true" type="success">
@@ -68,12 +74,12 @@
                             <div class="col-xs-2 center">{{ link.bytes / (1024 * 1024) | number:2 }}</div>
                             <div class="col-xs-4 center">{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
                             <div class="col-xs-1 center">
-                                <a href="#" ng-click="downloadFile(link.name)">
+                                <a href="#" ng-click="downloadFile(link.name)" class="pointer">
                                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                                 </a>
                             </div>
                             <div class="col-xs-1 center">
-                                <a href="#" ng-click="viewMetadata(link.name)">
+                                <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
                                     <img src="./images/metadata.png" style="width: 25px; height: 18px;" />
                                 </a>
                             </div>

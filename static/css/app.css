@@ -45,6 +45,14 @@ div.progress-container {
 	
 }
 
+.title {
+    font-size: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    padding-top: 20px;
+    font-size: 18px;
+}
+
 .show-grid [class^="col-"], .show-grid-header [class*="col-"] {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -81,4 +89,8 @@ div.progress-container {
 
 .center{
 	text-align: center;;
+}
+
+.pointer{
+	cursor: pointer;
 }
