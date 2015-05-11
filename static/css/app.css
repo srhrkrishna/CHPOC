@@ -2,14 +2,19 @@
     font-weight: bold;
 }
 
+body{
+	background-color: #f5f5f5;
+}
+
 div.content-container {
 	width: 90%; 
 	margin: 0 auto;
 	margin-top: 2%;
+	overflow-x: auto;
 }
 
 div.data-container{
-	max-height: 450px;
+	max-height: 420px;
 	min-width: 600px;
 	overflow-y: auto; 
 	width: 100%;
@@ -46,11 +51,10 @@ div.progress-container {
 }
 
 .title {
-    font-size: bold;
     color: #fff;
     letter-spacing: 2px;
-    padding-top: 20px;
-    font-size: 18px;
+    padding-top: 16px;
+    font-size: 20px;
 }
 
 .show-grid [class^="col-"], .show-grid-header [class*="col-"] {
@@ -60,12 +64,12 @@ div.progress-container {
 }
 
 .show-grid-header [class^="col-"] {
-    border: 1px solid #035F85;
-    background-color: #0478a7;
-    font-weight: bold;
+    border: 1px solid #295b20;
+    background-image: linear-gradient(to bottom,#347629 0%,#295b20 100%);
     color: #fff;
     vertical-align: middle;
     text-align: center;
+    letter-spacing: 2px;
 }
 
 .row {
