@@ -44,14 +44,16 @@
                     </div>
                 </div>
                 <div class='content-container container-fluid' ng-show="currentUser.length !== 0">
-                    <div class="data-container left">
+                    <div class="data-container left" style="overflow-y:scroll;">
                         <div class="row show-grid-header">
                             <div class="col-xs-4">Name</div>
                             <div class="col-xs-2">Size(MB)</div>
                             <div class="col-xs-4">Uploaded Date</div>
                             <div class="col-xs-1">Link</div>
-                            <div class="col-xs-1">Metadata</div>
+                            <div class="col-xs-1">Info</div>
                         </div>
+                    </div>
+                    <div class="data-container left">
                         <div class="row show-grid" ng-class="{'alternate-row':!$even}" ng-repeat="link in links | orderBy:'-last_modified'">
                             <div class="col-xs-4">{{ link.name }}</div>
                             <div class="col-xs-2 center">{{ link.bytes / (1024 * 1024) | number:2 }}</div>
