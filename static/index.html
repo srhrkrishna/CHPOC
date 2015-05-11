@@ -10,68 +10,103 @@
     <title>Open Stack</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
-    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+    <!--<link rel="stylesheet" type="text/css" href="css/sidebar.css">-->
     <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 
 <body>
-
-    <div id="wrapper" ng-controller="indexController" ng-init="showLogin()">
-
-        <!-- Sidebar -->
-        <!--<div class="container-fluid">-->
-            <!--<ul class="row col-xs-10">-->
-                <!--<li>-->
-                    <!--<a>Open Stack-->
-                    <!--</a>-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</div>-->
-        <!-- Sidebar -->
-
-        <!-- Page Content -->
-        <div class = "container-fluid">
-            <div class="row col-xs-12">
-            <div style="width: 100%; float: left;">
-                <div style="float: right">
-                    <h6 class="bold">Welcome, {{ currentUser }} !</h6>
-                </div>
+    <header id="header">
+        <div class="inner-content">
+            <div class="logo left">
+                <img src="./images/cognizant-logo.jpg" style="width: 150px; height: 60px;" />
             </div>
-            <h3>List of download links</h3>
-            <div class='progress-container'>
-                <div ng-show="apiCall.isDownloading">
-                    <progressbar class="progress-striped active" value="100" animate="true" type="success">
-                        <b>Downloading in Progress ..</b>
-                    </progressbar>
-                </div>
-            </div>
-            <div class='content-container' ng-show="currentUser.length !== 0">
-                <table class="table table-striped table-bordered" style="width: 70%;">
-                    <tr>
-                        <th>Name
-                        </th>
-                        <th>Size in MB
-                        </th>
-                        <th>Uploaded Date</th>
-                        <th>Download link
-                        </th>
-                        <th>Meta Data
-                        </th>                        
-                    </tr>
-                    <tr ng-repeat="link in links | orderBy:'-last_modified'">
-                        <td>{{ link.name }}</td>
-                        <td>{{ link.bytes / (1024 * 1024) | number:2 }}</td>
-                        <td>{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
-                        <td><a href="#" ng-click="downloadFile(link.name)">Download Link</a></td>
-                        <td><a href="#" ng-click="viewMetadata(link.name)">View</a></td>                        
-                    </tr>
-                </table>
+            <div class="user-info right">
+                <span class="glyphicon glyphicon-off btn-lg" aria-hidden="true"></span>
             </div>
         </div>
-        <!-- Page Content -->
-        </div>
-    </div>
+    </header>
+    <section style="background-color:#A9E09F;">
+        <div id="wrapper" ng-controller="indexController" ng-init="showLogin()">
 
+            <!-- Sidebar -->
+            <!--<div class="container-fluid">-->
+                <!--<ul class="row col-xs-10">-->
+                    <!--<li>-->
+                        <!--<a>Open Stack-->
+                        <!--</a>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!-- Sidebar -->
+
+            <!-- Page Content -->
+            <div class="container-fluid">
+                <div style="width: 100%; float: left;">
+                    <div style="float: right">
+                        <h6 class="bold">Welcome, {{ currentUser }} !</h6>
+                    </div>
+                </div>
+                <h3>Video Feed</h3>
+                <div class='progress-container'>
+                    <div ng-show="apiCall.isDownloading">
+                        <progressbar class="progress-striped active" value="100" animate="true" type="success">
+                            <b>Downloading in Progress ..</b>
+                        </progressbar>
+                    </div>
+                </div>
+                <div class='content-container container-fluid' ng-show="currentUser.length !== 0">
+                    <div class="data-container left">
+                        <div class="row show-grid-header">
+                            <div class="col-xs-4">Name</div>
+                            <div class="col-xs-2">Size (MB)</div>
+                            <div class="col-xs-4">Uploaded Date</div>
+                            <div class="col-xs-1">Link</div>
+                            <div class="col-xs-1">Metadata</div>
+                        </div>
+                        <div class="row show-grid" ng-class="{'alternate-row':!$even}" ng-repeat="link in links | orderBy:'-last_modified'">
+                            <div class="col-xs-4">{{ link.name }}</div>
+                            <div class="col-xs-2 center">{{ link.bytes / (1024 * 1024) | number:2 }}</div>
+                            <div class="col-xs-4 center">{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
+                            <div class="col-xs-1 center">
+                                <a href="#" ng-click="downloadFile(link.name)">
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                </a>
+                            </div>
+                            <div class="col-xs-1 center">
+                                <a href="#" ng-click="viewMetadata(link.name)">
+                                    <img src="./images/metadata.png" style="width: 25px; height: 18px;" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>               
+                    <!--<table class="table table-striped table-bordered" style="width: 70%;">
+                        <tr>
+                            <th>Name
+                            </th>
+                            <th>Size in MB
+                            </th>
+                            <th>Uploaded Date</th>
+                            <th>Download link
+                            </th>
+                            <th>Meta Data
+                            </th>                        
+                        </tr>
+                        <tr ng-repeat="link in links | orderBy:'-last_modified'">
+                            <td>{{ link.name }}</td>
+                            <td>{{ link.bytes / (1024 * 1024) | number:2 }}</td>
+                            <td>{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+                            <td>
+                                <a href="#" ng-click="downloadFile(link.name)"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                            </td>
+                            <td><a href="#" ng-click="viewMetadata(link.name)">View</a></td>                        
+                        </tr>
+                    </table>-->
+                </div>
+            </div>
+            <!-- Page Content -->
+        </div>
+    </section>
+    <footer></footer>
     <!-- Libs - Starts Here -->
     <script type="text/javascript" src="js/libs/jquery.min.js"></script>
     <script type="text/javascript" src="js/libs/bootstrap.min.js"></script>

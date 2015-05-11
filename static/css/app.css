@@ -3,11 +3,82 @@
 }
 
 div.content-container {
-	width: 100%; 
+	width: 90%; 
+	margin: 0 auto;
 	margin-top: 2%;
+}
+
+div.data-container{
+	max-height: 450px;
+	min-width: 600px;
+	overflow-y: auto; 
+	width: 100%;
 }
 
 div.progress-container {
 	margin-top: 1%;
   	height: 30px;
+}
+
+#header {
+	width: 100%;
+	height: 60px;
+	background-image: linear-gradient(to bottom,#0478a7 0%,#013e5b 100%)
+}
+
+#header div.inner-content{
+	width: 100%;
+	height: 100%;
+}
+
+#header div.logo {
+	
+}
+
+#header div.user-info span
+{
+	padding-top: 15px;
+	color: #fff;
+}
+
+#header div.user-info {
+	
+}
+
+.show-grid [class^="col-"], .show-grid-header [class*="col-"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid rgba(86, 61, 124, 0.2);
+}
+
+.show-grid-header [class^="col-"] {
+    border: 1px solid #035F85;
+    background-color: #0478a7;
+    font-weight: bold;
+    color: #fff;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.alternate-row {
+	background-color: rgba(86, 61, 124, 0.15);
+}
+
+/*Common Styles*/
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.center{
+	text-align: center;;
 }

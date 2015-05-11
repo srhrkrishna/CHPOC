@@ -25,6 +25,9 @@
     });
     
     $scope.downloadFile = function(link) {
+        if ($scope.apiCall.isDownloading) {
+            return false;
+        }
         openstackService.request(link);
     }
 
