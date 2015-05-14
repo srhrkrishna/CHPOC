@@ -2,12 +2,12 @@
     font-weight: bold;
 }
 
-body{
-	background-color: #f5f5f5;
+body, .modal-content{
+	background-color: #EBF7ED;
 }
 
 div.content-container {
-	width: 90%; 
+	width: 100%; 
 	margin: 0 auto;
 	margin-top: 2%;
 	overflow-x: auto;
@@ -28,7 +28,8 @@ div.progress-container {
 #header {
 	width: 100%;
 	height: 60px;
-	background-image: linear-gradient(to bottom,#0478a7 0%,#013e5b 100%)
+	background-image: -webkit-linear-gradient(to bottom,#0478a7 0%,#013e5b 100%);
+	background-image: linear-gradient(to bottom,#0478a7 0%,#013e5b 100%);
 }
 
 #header div.inner-content{
@@ -63,8 +64,9 @@ div.progress-container {
     border: 1px solid rgba(86, 61, 124, 0.2);
 }
 
-.show-grid-header [class^="col-"] {
+.show-grid-header [class^="col-"], tr.show-grid-header th {
     border: 1px solid #295b20;
+    background-image: -webkit-linear-gradient(to bottom,#347629 0%,#295b20 100%);
     background-image: linear-gradient(to bottom,#347629 0%,#295b20 100%);
     color: #fff;
     vertical-align: middle;
@@ -77,8 +79,8 @@ div.progress-container {
     margin-left: 0px;
 }
 
-.alternate-row {
-	background-color: rgba(86, 61, 124, 0.15);
+.alternate-row, tr.alternate-row td {
+	background-color: rgba(86, 61, 0, 0.15);
 }
 
 /*Common Styles*/
