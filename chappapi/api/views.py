@@ -2,19 +2,17 @@
 # imports
 # ...
 from wsgiref.util import FileWrapper
-import datetime
 from django.http import HttpResponse
 from rest_framework import views, status
-from rest_framework.decorators import detail_route
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from urlparse import parse_qs
-import zlib
 import base64
 import keystoneclient.v2_0.client as ksclient
 import httplib
 import json
 import re
+import subprocess
 
 
 class AuthToken(object):
@@ -51,10 +49,7 @@ class VideoView(views.APIView):
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
         try:
-            parsed_query_string = parse_qs(request.GET.urlencode())
-            # file_name = parsed_query_string.get('filename')[0]
             file_name = kwargs['filename']
-            # print file_name
             if not file_name:
                 return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
         except BaseException:
@@ -62,17 +57,16 @@ class VideoView(views.APIView):
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token}
-        h.request('GET', '/swift/v1/Videos/'+file_name, '', headers_content)
+        h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
         response = h.getresponse()
-        # print file_name
         destination = open('/home/ubuntu/files/temp_' + file_name, 'wb+')
         destination.write(response.read())
         destination.close()
 
         video_file = open('/home/ubuntu/files/temp_' + file_name, 'rb')
 
-        obj = HttpResponse(FileWrapper(video_file), content_type='application/video', status = response.status)
-        obj['Content-Disposition'] = 'attachment; filename="%s"' % (file_name)
+        obj = HttpResponse(FileWrapper(video_file), content_type='application/video', status=response.status)
+        obj['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         return obj
 
 
@@ -95,15 +89,13 @@ class ThumbnailView(views.APIView):
         auth_token = AuthToken.get_auth_token(request)
         if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
-        # print auth_token
         file_name = request.META.get('HTTP_FILENAME')
-        # print file_name
         if not file_name:
             return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token}
-        h.request('GET', '/swift/v1/Thumbnails/'+file_name, '', headers_content)
+        h.request('GET', '/swift/v1/Thumbnails/' + file_name, '', headers_content)
         response = h.getresponse()
         return HttpResponse(response.read(), response.status)
 
@@ -113,7 +105,6 @@ class VideoUploadView(views.APIView):
 
     def put(self, request):
         try:
-            logfile = open('/home/ubuntu/files/log.txt', 'wb+')
             auth_token = AuthToken.get_auth_token(request)
             if not auth_token:
                 return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
@@ -122,51 +113,42 @@ class VideoUploadView(views.APIView):
             file_path = '/home/ubuntu/files/'
             video_path = file_path + up_file.name
 
-            logfile.write('Video Upload started for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
-
             # save video to local directory
             destination = open(video_path, 'wb+')
             for chunk in up_file.chunks():
                 destination.write(chunk)
             destination.close()
-            logfile.write('Video Upload completed for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
-            print request.META
-            # save thumbnail to local directory
-            thumbnail = request.META.get('HTTP_THUMBNAIL')
-            thumbnail_name = request.META.get('HTTP_THUMBNAILNAME')
-            headers_content = {"X-Auth-Token": auth_token}
 
-            if thumbnail and thumbnail_name:
-                # print thumbnail_name
-                str1 = zlib.decompress(base64.b64decode(thumbnail))
-                thumbnail_path = file_path + thumbnail_name
-                destination1 = open(thumbnail_path, 'wb+')
-                destination1.write(str1)
-                destination1.close()
+            # Create Thumbnail
+            thumbnail_name = up_file.name.split('.')[0] + '.jpeg'
+            thumbnail_path = file_path + thumbnail_name
+
+            command = '/home/krishna/bin/ffmpeg -y -itsoffset -2  -i %s -vcodec mjpeg -vframes 1 -an -f rawvideo -s 320x240 %s' % \
+                      (video_path, thumbnail_path)
+            p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            output = p.communicate()[0]
+
+            headers_content = {"X-Auth-Token": auth_token}
+            if thumbnail_name:
                 headers_content["X-Object-Meta-Thumbnail"] = thumbnail_name
                 h2 = httplib.HTTPConnection("23.246.246.66:8080")
                 headers_content1 = {"X-Auth-Token": auth_token, "X-Object-Meta-VideoFileName": up_file.name}
-                h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'), headers_content1)
+                h2.request('PUT', '/swift/v1/Thumbnails/' + thumbnail_name, open(thumbnail_path, 'rb'),
+                           headers_content1)
 
-            logfile.write('Video Upload to swift started for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
-            # print up_file.name
             # ...
             # store video and thumbnail in swift
             # ...
             regex = re.compile('^HTTP__X_CH_')
             metadata = dict((regex.sub('', header), value) for (header, value)
-                in request.META.items() if header.startswith('HTTP_X_CH_'))
+                            in request.META.items() if header.startswith('HTTP_X_CH_'))
 
             for header in metadata:
                 headers_content.update({'X-Object-Meta-' + header: metadata.get(header)})
 
-            # print headers_content
             h = httplib.HTTPConnection("23.246.246.66:8080")
             h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
             response = h.getresponse()
-            logfile.write('Video Upload to swift completed for %s: %s\n' % (up_file.name, str(datetime.datetime.utcnow().time())))
-            logfile.flush()
-            logfile.close()
             return Response(response.read(), response.status)
         except:
             return Response('', status.HTTP_400_BAD_REQUEST)
@@ -193,12 +175,10 @@ class ThumbnailUploadView(views.APIView):
                 destination.write(chunk)
             destination.close()
 
-            # print up_file.name
             # ...
             # store thumbnail in swift
             # ...
             h = httplib.HTTPConnection("23.246.246.66:8080")
-            # print up_file.name
             h.request('PUT', '/swift/v1/Thumbnails/' + up_file.name, open(thumbnail_path, 'rb'), headers_content)
             response = h.getresponse()
             return Response(response.read(), response.status)
@@ -220,6 +200,7 @@ class UserView(views.APIView):
                 return Response('', status.HTTP_401_UNAUTHORIZED)
             else:
                 password = gateway_login["Password"]
+
             # ...
             # get auth-token
             # ...
@@ -267,14 +248,38 @@ class List(views.APIView):
 
     def get(self, request, *args, **kwargs):
         auth_token = AuthToken.get_auth_token(request)
+
         if not auth_token:
             return Response("Authentication token Invalid", status.HTTP_401_UNAUTHORIZED)
 
         h = httplib.HTTPConnection("23.246.246.66:8080")
-        headers_content = {"X-Auth-Token": auth_token, "Accept":"application/json"}
+        headers_content = {"X-Auth-Token": auth_token, "Accept": "application/json"}
         h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
         response = h.getresponse()
         obj = json.loads(response.read())
+        h.close()
+        for item in obj:
+            video_name = item['name']
+            image_name = video_name.split('.')[0] + '.jpeg'
+
+            h1 = httplib.HTTPConnection("23.246.246.66:8080")
+            headers_content_image = {"X-Auth-Token": auth_token}
+            url = '/swift/v1/Thumbnails/' + image_name
+            h1.request('GET', url, '', headers_content_image)
+            response = h1.getresponse()
+            thumbnail_output = response.read()
+            thumbnail_status = response.status
+            h1.close()
+
+            if thumbnail_status == status.HTTP_404_NOT_FOUND:
+                item['thumbnail'] = 'Thumbnail not found'
+            else:
+                temp_image_name = '/home/ubuntu/files/temp_{0}'.format(image_name)
+                with open(temp_image_name, 'wb+') as thumbnail_dest:
+                    thumbnail_dest.write(thumbnail_output)
+                with open(temp_image_name, 'rb') as thumbnail_read:
+                    item['thumbnail'] = base64.b64encode(thumbnail_read.read())
+
         return Response(obj, status=status.HTTP_200_OK, headers={"Content-Type": "application/json"})
 
 
@@ -297,10 +302,7 @@ class MetadataView(views.APIView):
 
         # Get file name
         try:
-            # parsed_query_string = parse_qs(request.GET.urlencode())
-            # file_name = parsed_query_string.get('filename')[0]
             file_name = kwargs['filename']
-            # print file_name
             if not file_name:
                 return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
         except BaseException:
@@ -308,7 +310,7 @@ class MetadataView(views.APIView):
 
         # Get Headers
         h = httplib.HTTPConnection("23.246.246.66:8080")
-        headers_content = {"X-Auth-Token": auth_token, "Accept":"application/json"}
+        headers_content = {"X-Auth-Token": auth_token, "Accept": "application/json"}
         h.request('HEAD', '/swift/v1/Videos/' + file_name, '', headers_content)
         response = h.getresponse()
         response_headers = response.getheaders()
@@ -321,7 +323,6 @@ class MetadataView(views.APIView):
         modified_response_headers = []
         for header in metadata:
             modified_response_headers.append({"Key": header, "Value": metadata.get(header)})
-            # print header
 
-        # obj = json.loads(response.read())
-        return Response(modified_response_headers, status=status.HTTP_200_OK, headers={"Content-Type": "application/json"})
+        return Response(modified_response_headers, status=status.HTTP_200_OK,
+                        headers={"Content-Type": "application/json"})

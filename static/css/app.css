@@ -1,4 +1,4 @@
-﻿.bold {
+.bold {
     font-weight: bold;
 }
 
@@ -58,7 +58,7 @@ div.progress-container {
     font-size: 20px;
 }
 
-.show-grid [class^="col-"], .show-grid-header [class*="col-"] {
+.show-grid, .show-grid-header [class*="col-"] {
     padding-top: 10px;
     padding-bottom: 10px;
     border: 1px solid rgba(86, 61, 124, 0.2);
@@ -100,3 +100,38 @@ div.progress-container {
 .pointer{
 	cursor: pointer;
 }
+
+.img_container {
+    position:relative;
+    display:inline-block;
+    text-align:center;
+    border:1px solid red;
+}
+
+.img_thumbnail {
+	width: 100%;
+	height: 100%;
+	border:1px solid green;
+	/*border-radius: 50%;
+	-webkit-border-radius:50%
+	-moz-border-radius:50%;*/
+}
+
+.download_button {
+    position:absolute;
+    top:10px;
+    left:30px;
+    width:30px;
+    height:30px;
+    color: white
+    background-color: grey;
+}
+
+.metadata_button {
+    position:absolute;
+    top:40px;
+    left:30px;
+    width:30px;
+    height:30px;
+}
+

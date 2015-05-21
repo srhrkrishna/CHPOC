@@ -44,29 +44,36 @@
                     </div>
                 </div>
                 <div class='content-container container-fluid' ng-show="currentUser.length !== 0">
-                    <div class="data-container left" style="overflow-y:scroll;">
+                    <!-- <div class="data-container left" style="overflow-y:scroll;">
                         <div class="row show-grid-header">
                             <div class="col-xs-4">Name</div>
+                            <div class="col-xs-4">Thumbnail</div>
                             <div class="col-xs-2">Size(MB)</div>
                             <div class="col-xs-4">Uploaded Date</div>
                             <div class="col-xs-1">Link</div>
                             <div class="col-xs-1">Info</div>
                         </div>
-                    </div>
-                    <div class="data-container left">
-                        <div class="row show-grid" ng-class="{'alternate-row':!$even}" ng-repeat="link in links | orderBy:'-last_modified'">
-                            <div class="col-xs-4">{{ link.name }}</div>
-                            <div class="col-xs-2 center">{{ link.bytes / (1024 * 1024) | number:2 }}</div>
-                            <div class="col-xs-4 center">{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
-                            <div class="col-xs-1 center">
+                    </div> -->
+                    <div class="container-fluid left">
+                        <div class="row show-grid" ng-repeat="link in links | orderBy:'-last_modified'">
+                            <div class="col-xs-3 col-md-2 image-container">
+                                <img class="img_thumbnail" ng-show="link.thumbnail == 'Thumbnail not found'" src="./images/not_found.jpeg" alt="{{ link.name }}" />
+                                <img class="img_thumbnail" ng-hide="link.thumbnail == 'Thumbnail not found'" ng-src="data:image/jpeg;base64,{{ link.thumbnail }}" alt="{{ link.name }}" />
+                                <div class="download_button">
                                 <a href="#" ng-click="downloadFile(link.name)" class="pointer">
                                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                                 </a>
+                                </div>
+                                <div class="metadata_button">
+                                    <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
+                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="col-xs-1 center">
-                                <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
-                                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                                </a>
+                            <div class="col-xs-10 col-md-10">
+                                <div>Name: {{ link.name }}</div>
+                                <div>Size: {{ link.bytes / (1024 * 1024) | number:2 }} MB</div>
+                                <div>Last Modified: {{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
                             </div>
                         </div>
                     </div>
