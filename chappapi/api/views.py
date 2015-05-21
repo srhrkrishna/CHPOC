@@ -59,7 +59,7 @@ class VideoView(views.APIView):
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
         response = h.getresponse()
-        if response.status == status.HTTP_200_OK:
+        if not response.status == status.HTTP_200_OK:
             return Response(response.read(), response.status)
         destination = open('/home/ubuntu/files/temp_' + file_name, 'wb+')
         destination.write(response.read())
@@ -259,7 +259,7 @@ class List(views.APIView):
         h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
         response = h.getresponse()
         if not response.status == status.HTTP_200_OK:
-            return Response(response.read(),response.status)
+            return Response(response.read(), response.status)
         obj = json.loads(response.read())
         h.close()
         for item in obj:
@@ -319,7 +319,7 @@ class MetadataView(views.APIView):
         response = h.getresponse()
         response_headers = response.getheaders()
         if not response.status == status.HTTP_200_OK:
-            return Response(response.read(),response.status)
+            return Response(response.read(), response.status)
         # Extract Metadata headers alone
         regex = re.compile('^x-object-meta-http-x-ch-')
         metadata = dict((regex.sub('', header), value) for (header, value)
