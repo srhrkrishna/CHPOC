@@ -59,6 +59,8 @@ class VideoView(views.APIView):
         headers_content = {"X-Auth-Token": auth_token}
         h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
         response = h.getresponse()
+        if response.status == status.HTTP_200_OK:
+            return Response(response.read(), response.status)
         destination = open('/home/ubuntu/files/temp_' + file_name, 'wb+')
         destination.write(response.read())
         destination.close()
