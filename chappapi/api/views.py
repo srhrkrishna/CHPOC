@@ -72,6 +72,46 @@ class VideoView(views.APIView):
         return obj
 
 
+class VideoStreamView(views.APIView):
+    """
+    Download Video file
+    """
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        """
+        ---
+        omit_serializer: true
+        parameters:
+            - name: filename
+              paramType: path
+            - name: x-a12n
+              paramType: header
+        """
+        temporary_filename = ''
+        try:
+            auth_token = kwargs['authtoken']
+            file_name = kwargs['filename']
+            temporary_filename = 'temp_' + file_name
+            if not file_name:
+                return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+        except BaseException:
+            return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
+
+        h = httplib.HTTPConnection("23.246.246.66:8080")
+        headers_content = {"X-Auth-Token": auth_token}
+        h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
+        response = h.getresponse()
+        if not response.status == status.HTTP_200_OK:
+            return Response(response.read(), response.status)
+        destination = open('/var/www/CHPOC/static/videos/' + temporary_filename, 'wb+')
+        destination.write(response.read())
+        destination.close()
+
+        obj = HttpResponse('http://169.53.139.163/static/videos/'+temporary_filename, content_type='text/plain', status=response.status)
+        return obj
+
+
 class ThumbnailView(views.APIView):
     """
     Download Thumbnail file
@@ -125,7 +165,7 @@ class VideoUploadView(views.APIView):
             thumbnail_name = up_file.name.split('.')[0] + '.jpeg'
             thumbnail_path = file_path + thumbnail_name
 
-            command = '/home/krishna/bin/ffmpeg -y -itsoffset -2  -i %s -vcodec mjpeg -vframes 1 -an -f rawvideo -s 320x240 %s' % \
+            command = '/home/ubuntu/bin/ffmpeg -y -itsoffset -2  -i %s -vcodec mjpeg -vframes 1 -an -f rawvideo -s 320x240 %s' % \
                       (video_path, thumbnail_path)
             p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             output = p.communicate()[0]
