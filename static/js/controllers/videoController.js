@@ -3,7 +3,6 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
 
         var baseUrl = App_Constants.url + '/video/',
             url;
-        $scope.videourl = "http://169.53.139.163/static/videos/rdk20150512_044038.mp4";
 
         $scope.closePopup = function() {
             $modalInstance.dismiss('cancel');
@@ -13,7 +12,11 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
             url = baseUrl + fileInfo + '/stream/' + App_Constants.auth;
             $http.get(url).
             success(function(data, status) {
-                $scope.videourl = data;
+                video_tag = document.getElementById('videoPlr');
+                video_tag.src = data;
+                // video_tag.load();
+                video_tag.play();
+                App_Constants.videourl = data;
             }).error(function(data, status) {
         		
             });
