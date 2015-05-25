@@ -82,7 +82,7 @@ class VideoProcessor():
         for header in metadata:
             headers_content2.update({header: metadata.get(header)})
 
-        h2.request('PUT', '/swift/v1/Videos/' + mp4_file_name, open(video_file_path, 'rb'), headers_content2)
+        h2.request('PUT', '/swift/v1/Videos/' + mp4_file_name, open(self.file_path + mp4_file_name, 'rb'), headers_content2)
         response2 = h2.getresponse()
 
         if not response2.status == status.HTTP_201_CREATED:
