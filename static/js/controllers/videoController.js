@@ -15,8 +15,8 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
                 video_tag = document.getElementById('videoPlr');
                 video_tag.src = data;
                 // video_tag.load();
-                video_tag.play();
-                App_Constants.videourl = data;
+                // video_tag.play();
+                // App_Constants.videourl = data;
             }).error(function(data, status) {
         		
             });
