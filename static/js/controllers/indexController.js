@@ -43,7 +43,21 @@
                 fileInfo: function() { return name; }
             }
         });
-    }    
+    }   
+
+    $scope.viewVideo = function(name) {
+        //openstackService.metadata();
+        $modal.open({
+            templateUrl: 'html/videoplay.html',
+            controller: 'videoController',
+            backdrop: 'static',
+            keyboard: false,
+            size: 'lg',
+            resolve: {
+                fileInfo: function() { return name; }
+            }
+        });
+    } 
 
     //$scope.links = [{ name: "File Name 1", url: "#" }, { name: "File Name 2", url: "#" }];
 

@@ -63,10 +63,13 @@
                                 <a href="#" ng-click="downloadFile(link.name)" class="pointer">
                                     <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                                 </a>
-                                </div>
-                                <div class="metadata_button">
-                                    <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
+                                <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
                                         <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                                    </a>
+                                </div>
+                                <div class="play_button">
+                                    <a href="#" ng-click="viewVideo(link.name)" class="pointer">
+                                        <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
                                     </a>
                                 </div>
                             </div>
@@ -94,6 +97,7 @@
     <script type="text/javascript" src="js/controllers/indexController.js"></script>    
     <script type="text/javascript" src="js/controllers/loginController.js"></script>
     <script type="text/javascript" src="js/controllers/metadataController.js"></script>
+    <script type="text/javascript" src="js/controllers/videoController.js"></script>
     <script type="text/javascript" src="js/services/loginService.js"></script>
     <script type="text/javascript" src="js/services/openstackService.js"></script>
     <script type="text/javascript" src="js/services/videoService.js"></script>

@@ -1,0 +1,17 @@
+<form name="form" novalidate data-backdrop="static" ng-init="playVideo()">
+    <div id="metadataForm" class="modal-content">
+        <div class="modal-header">
+            <h4>Video</h4>
+        </div>
+        <div class="modal-body" style="height: 400px; overflow-y:auto;">
+            <div>
+                <video id="videoPlr" style="width:720px;height:400px;" autoplay="true" controls>
+                    <source src="{{ videourl | trusted }}" type='video/mp4' />
+                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                </video>
+            </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="closePopup()">Close</button>
+        </div>
+    </div>
+</form>

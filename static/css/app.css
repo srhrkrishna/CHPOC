@@ -118,20 +118,22 @@ div.progress-container {
 }
 
 .download_button {
-    position:absolute;
-    top:10px;
+    position:relative;
+    /*top:10px;
     left:30px;
     width:30px;
     height:30px;
     color: white
-    background-color: grey;
+    background-color: grey;*/
 }
 
-.metadata_button {
+.play_button {
     position:absolute;
-    top:40px;
-    left:30px;
-    width:30px;
-    height:30px;
+    top:25px;
+    left:55px;
+    width:60px;
+    height:60px;
+    color: white;
+    font-size: 40px;
 }
 
