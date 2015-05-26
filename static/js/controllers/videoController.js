@@ -4,19 +4,15 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
         var baseUrl = App_Constants.url + '/video/',
             url;
 
+        $scope.isMp4 = true;
+
         $scope.closePopup = function() {
             $modalInstance.dismiss('cancel');
         };
 
         $scope.playVideo = function() {
             var extension = fileInfo.substr( (fileInfo.lastIndexOf('.') +1) );
-            if (extension != 'mp4') {
-                document.getElementById('message').style.display='block';
-                document.getElementById('videoPlr').style.display='none';
-                return;
-            }
-            document.getElementById('message').style.display='none';
-            document.getElementById('videoPlr').style.display='block';
+            $scope.isMp4 = extension !== 'mp4' ? false : true;
 
             url = baseUrl + fileInfo + '/stream/' + App_Constants.auth;
             $http.get(url).
