@@ -9,6 +9,15 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
         };
 
         $scope.playVideo = function() {
+            var extension = fileInfo.substr( (fileInfo.lastIndexOf('.') +1) );
+            if (extension != 'mp4') {
+                document.getElementById('message').style.display='block';
+                document.getElementById('videoPlr').style.display='none';
+                return;
+            }
+            document.getElementById('message').style.display='none';
+            document.getElementById('videoPlr').style.display='block';
+
             url = baseUrl + fileInfo + '/stream/' + App_Constants.auth;
             $http.get(url).
             success(function(data, status) {

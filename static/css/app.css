@@ -119,21 +119,27 @@ div.progress-container {
 
 .download_button {
     position:relative;
-    /*top:10px;
-    left:30px;
-    width:30px;
-    height:30px;
-    color: white
-    background-color: grey;*/
+    font-size: 30px;
 }
 
 .play_button {
     position:absolute;
-    top:25px;
-    left:55px;
-    width:60px;
-    height:60px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
     color: white;
-    font-size: 40px;
+    font-size: 100px;
+}
+
+.image_align_center{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    margin: auto;
+    height: 100px;
+    width: 100px;
 }
 
