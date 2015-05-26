@@ -14,7 +14,7 @@ openstackApp.controller('videoController', ['$scope', '$http', '$modalInstance',
             success(function(data, status) {
                 video_tag = document.getElementById('videoPlr');
                 source_tag = document.getElementById('mp4Source');
-                source_tag.setAttribute('src', data)
+                video_tag.setAttribute('src', data)
                 // video_tag.src = data;
                 video_tag.load();
 
