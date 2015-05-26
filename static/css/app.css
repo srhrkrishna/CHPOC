@@ -101,11 +101,8 @@ div.progress-container {
 	cursor: pointer;
 }
 
-.img_container {
-    position:relative;
-    display:inline-block;
-    text-align:center;
-    border:1px solid red;
+.image-container {
+    width:240px;
 }
 
 .img_thumbnail {
