@@ -36,4 +36,4 @@ class ViewsTestCase(APITestCase):
         self.assertFalse('x-a12n' in response)
 
 
-curl -v -H 'X-Auth-Token: AUTH_tk59bf5e497bda4a298c06ba723cbad57d' http://127.0.0.1:8080/v1/AUTH_test
+# curl -v -H 'X-Auth-Token: AUTH_tk59bf5e497bda4a298c06ba723cbad57d' http://127.0.0.1:8080/v1/AUTH_test

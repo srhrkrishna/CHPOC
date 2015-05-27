@@ -44,29 +44,33 @@
                     </div>
                 </div>
                 <div class='content-container container-fluid' ng-show="currentUser.length !== 0">
-                    <div class="data-container left" style="overflow-y:scroll;">
-                        <div class="row show-grid-header">
-                            <div class="col-xs-4">Name</div>
-                            <div class="col-xs-2">Size(MB)</div>
-                            <div class="col-xs-4">Uploaded Date</div>
-                            <div class="col-xs-1">Link</div>
-                            <div class="col-xs-1">Info</div>
-                        </div>
-                    </div>
-                    <div class="data-container left">
-                        <div class="row show-grid" ng-class="{'alternate-row':!$even}" ng-repeat="link in links | orderBy:'-last_modified'">
-                            <div class="col-xs-4">{{ link.name }}</div>
-                            <div class="col-xs-2 center">{{ link.bytes / (1024 * 1024) | number:2 }}</div>
-                            <div class="col-xs-4 center">{{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
-                            <div class="col-xs-1 center">
+                    <div class="container-fluid left">
+                        <div class="row show-grid" ng-repeat="link in links | orderBy:'-last_modified'">
+                            <div class="col-xs-5 image-container">
+                                <img class="img_thumbnail"  ng-src="{{ link.thumbnail == 'Thumbnail not found' && './images/not_found.jpeg' || 'data:image/jpeg;base64,' + link.thumbnail }}" alt="{{ link.name }}"></img>
+                                <div class="play_button">
+                                    <div class="image_align_center">
+                                        <a href="#" ng-click="viewVideo(link.name)" class="pointer">
+                                            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="download_button">
                                 <a href="#" ng-click="downloadFile(link.name)" class="pointer">
-                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true">
+                                    </span>
+                                </a>
+                                <br />
+                                <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
+                                    <span class="glyphicon glyphicon-list" aria-hidden="true">
+                                    </span>
                                 </a>
                             </div>
-                            <div class="col-xs-1 center">
-                                <a href="#" ng-click="viewMetadata(link.name)" class="pointer">
-                                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-                                </a>
+                            <div class="col-xs-8 text-wrap">
+                                <div>Name: {{ link.name }}</div>
+                                <div>Size: {{ link.bytes / (1024 * 1024) | number:2 }} MB</div>
+                                <div>Last Modified: {{ link.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
                             </div>
                         </div>
                     </div>
@@ -87,6 +91,7 @@
     <script type="text/javascript" src="js/controllers/indexController.js"></script>    
     <script type="text/javascript" src="js/controllers/loginController.js"></script>
     <script type="text/javascript" src="js/controllers/metadataController.js"></script>
+    <script type="text/javascript" src="js/controllers/videoController.js"></script>
     <script type="text/javascript" src="js/services/loginService.js"></script>
     <script type="text/javascript" src="js/services/openstackService.js"></script>
     <script type="text/javascript" src="js/services/videoService.js"></script>

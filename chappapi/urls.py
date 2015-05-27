@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^docs/', include('rest_framework_swagger.urls')),
     # url(r'^video/$', views.VideoView.as_view()),
     url(r'^video/metadata/(?P<filename>.+)', views.MetadataView.as_view()),
+    url(r'^video/(?P<filename>.+)/stream/(?P<authtoken>.+)', views.VideoStreamView.as_view()),
     url(r'^video/(?P<filename>.+)', views.VideoView.as_view()),
     url(r'^thumbnail/', views.ThumbnailView.as_view()),
     url(r'^gateway/login', views.GatewayView.as_view(), name='gateway-login'),
