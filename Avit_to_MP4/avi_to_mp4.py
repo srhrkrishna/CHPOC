@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # ...
 # imports
 # ...
@@ -5,8 +7,12 @@ import json
 import subprocess
 import httplib
 import os
-import re
 import os.path
+import time
+import logging
+import logging.handlers
+import argparse
+import sys
 
 from rest_framework import status
 import keystoneclient.v2_0.client as ksclient
@@ -43,7 +49,7 @@ class VideoProcessor():
         if os.path.isfile(video_file_path) and os.access(video_file_path, os.R_OK):
             h = httplib.HTTPConnection(self.swift_ip)
             headers_content = {"X-Auth-Token": self.auth_token, "Accept": "application/json"}
-            h.request('HEAD', '/swift/v1/Videos/' + file_name, '', headers_content)
+            h.request('HEAD', '/swift/v1/Avis/' + file_name, '', headers_content)
             response = h.getresponse()
             if not response.status == status.HTTP_200_OK:
                 h.close()
@@ -53,7 +59,7 @@ class VideoProcessor():
         else:
             h = httplib.HTTPConnection(self.swift_ip)
             headers_content = {"X-Auth-Token": self.auth_token}
-            h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
+            h.request('GET', '/swift/v1/Avis/' + file_name, '', headers_content)
             response = h.getresponse()
             if not response.status == status.HTTP_200_OK:
                 h.close()
@@ -72,9 +78,12 @@ class VideoProcessor():
         command = '/home/ubuntu/bin/ffmpeg -y -i %s -c:v libx264 -crf 19 -c:a aac -strict experimental -movflags +faststart %s%s' % (
             video_file_path, self.file_path, mp4_file_name)
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        output = p.communicate()[0]
-        print p.returncode
-        print p.stderr
+        # output = p.communicate()[0]
+        # print p.returncode
+        # print p.stderr
+
+        if p.returncode != 0:
+            return 'Error in conversion'
 
         # Upload converted video
         h2 = httplib.HTTPConnection(self.swift_ip)
@@ -91,10 +100,10 @@ class VideoProcessor():
             # Delete previous file
             h3 = httplib.HTTPConnection(self.swift_ip)
             headers_content3 = {"X-Auth-Token": self.auth_token, "Content-Type":"application/json"}
-            h3.request('DELETE', '/swift/v1/Videos/' + file_name, '', headers_content3)
+            h3.request('DELETE', '/swift/v1/Avis/' + file_name, '', headers_content3)
             response3 = h3.getresponse()
             if response3.status == status.HTTP_204_NO_CONTENT:
-                return "Success"
+                return "Success: %s" % file_name
             else:
                 return "Old file not deleted"
 
@@ -104,7 +113,7 @@ class VideoProcessor():
         # ...
         h = httplib.HTTPConnection(self.swift_ip)
         headers_content = {"X-Auth-Token": self.auth_token, "Accept": "application/json"}
-        h.request('GET', '/swift/v1/Videos?format=json', '', headers_content)
+        h.request('GET', '/swift/v1/Avis?format=json', '', headers_content)
         response = h.getresponse()
         if response.status == status.HTTP_200_OK:
             obj = json.loads(response.read())
@@ -115,7 +124,48 @@ class VideoProcessor():
         for item in obj:
             item_name = str(item['name'])
             if item_name.endswith('.avi'):
-                mp4_file_name = self.convert_to_mp4(item_name)
+                message = self.convert_to_mp4(item_name)
+                print message
+
+# Logging
+LOG_FILENAME = "/tmp/avi_to_mp4.log"
+LOG_LEVEL = logging.INFO  # Could be e.g. "DEBUG" or "WARNING"
+
+# Define and parse command line arguments
+parser = argparse.ArgumentParser(description="My simple Python service")
+parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
+
+# If the log file is specified on the command line then override the default
+args = parser.parse_args()
+if args.log:
+        LOG_FILENAME = args.log
+
+# Configure logging to log to a file
+logger = logging.getLogger(__name__)
+logger.setLevel(LOG_LEVEL)
+# Make a handler that writes to a file, making a new file at midnight and keeping 3 backups
+handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
+# Format each log message like this
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+# Make a class we can use to capture stdout and sterr in the log
+class MyLogger(object):
+        def __init__(self, logger, level):
+                """Needs a logger and a logger level."""
+                self.logger = logger
+                self.level = level
+
+        def write(self, message):
+                # Only log if there is a message (not just a new line)
+                if message.rstrip() != "":
+                        self.logger.log(self.level, message.rstrip())
+
+sys.stdout = MyLogger(logger, logging.INFO)
+sys.stderr = MyLogger(logger, logging.ERROR)
 
 
-VideoProcessor().convert_from_avi_to_mp4()
+while True:
+    VideoProcessor().convert_from_avi_to_mp4()
+    time.sleep(10)
