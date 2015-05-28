@@ -10,12 +10,12 @@ Approach:
 Instruction for running the service:
 ====================================
 1. Copy the avi_to_mp4.py file to /usr/local/bin/avi_to_mp4 directory. Create avi_to_mp4 directory before copying and provide executable permission to the file.
-> `cd /usr/local/bin; sudo mkdir avi_to_mp4; sudo cp avi_to_mp4.py /usr/local/bin/avi_to_mp4/avi_to_mp4.py; sudo chmod 755 /usr/local/bin/avi_to_mp4/avi_to_mp4.py; cd -`
+> `sudo mkdir /usr/local/bin/avi_to_mp4; sudo cp ./Avit_to_MP4/avi_to_mp4.py /usr/local/bin/avi_to_mp4/avi_to_mp4.py; sudo chmod 755 /usr/local/bin/avi_to_mp4/avi_to_mp4.py;`
 
 2. Copy the avi_to_mp4.sh file to /etc/init.d directory.
-> `sudo cp avi_to_mp4.sh /etc/init.d/; sudo chmod 755 /etc/init.d/avi_to_mp4.sh; cd -`
+> `sudo cp ./Avit_to_MP4/avi_to_mp4.sh /etc/init.d/; sudo chmod 755 /etc/init.d/avi_to_mp4.sh;`
 
-3. At this point you should be able to start your Python script using the command sudo /etc/init.d/avi_to_mp4.sh start, check its status with the /etc/init.d/avi_to_mp4.sh status argument and stop it with sudo /etc/init.d/avi_to_mp4.sh stop.
+3. At this point you should be able to start your Python script using the command `sudo /etc/init.d/avi_to_mp4.sh start`, check its status with the `sudo /etc/init.d/avi_to_mp4.sh status` argument and stop it with `sudo /etc/init.d/avi_to_mp4.sh stop`.
 
 Note:
 -----

@@ -79,6 +79,8 @@ class VideoProcessor():
             video_file_path, self.file_path, mp4_file_name)
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+        time.sleep(5)
+
         # Upload converted video
         try:
             h2 = httplib.HTTPConnection(self.swift_ip)
