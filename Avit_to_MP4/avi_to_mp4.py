@@ -78,8 +78,7 @@ class VideoProcessor():
         command = '/home/ubuntu/bin/ffmpeg -y -i %s -c:v libx264 -crf 19 -c:a aac -strict experimental -movflags +faststart %s%s' % (
             video_file_path, self.file_path, mp4_file_name)
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        time.sleep(5)
+        output = p.communicate()[0]
 
         # Upload converted video
         try:
