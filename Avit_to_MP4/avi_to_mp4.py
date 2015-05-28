@@ -78,21 +78,18 @@ class VideoProcessor():
         command = '/home/ubuntu/bin/ffmpeg -y -i %s -c:v libx264 -crf 19 -c:a aac -strict experimental -movflags +faststart %s%s' % (
             video_file_path, self.file_path, mp4_file_name)
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        # output = p.communicate()[0]
-        # print p.returncode
-        # print p.stderr
-
-        if p.returncode != 0:
-            return 'Error in conversion'
 
         # Upload converted video
-        h2 = httplib.HTTPConnection(self.swift_ip)
-        headers_content2 = {"X-Auth-Token": self.auth_token}
-        for header in metadata:
-            headers_content2.update({header: metadata.get(header)})
+        try:
+            h2 = httplib.HTTPConnection(self.swift_ip)
+            headers_content2 = {"X-Auth-Token": self.auth_token}
+            for header in metadata:
+                headers_content2.update({header: metadata.get(header)})
 
-        h2.request('PUT', '/swift/v1/Videos/' + mp4_file_name, open(self.file_path + mp4_file_name, 'rb'), headers_content2)
-        response2 = h2.getresponse()
+            h2.request('PUT', '/swift/v1/Videos/' + mp4_file_name, open(self.file_path + mp4_file_name, 'rb'), headers_content2)
+            response2 = h2.getresponse()
+        except Exception, e:
+            return str(e)
 
         if not response2.status == status.HTTP_201_CREATED:
             return 'File not uploaded'
@@ -103,7 +100,7 @@ class VideoProcessor():
             h3.request('DELETE', '/swift/v1/Avis/' + file_name, '', headers_content3)
             response3 = h3.getresponse()
             if response3.status == status.HTTP_204_NO_CONTENT:
-                return "Success: %s" % file_name
+                return "Success"
             else:
                 return "Old file not deleted"
 
@@ -125,7 +122,8 @@ class VideoProcessor():
             item_name = str(item['name'])
             if item_name.endswith('.avi'):
                 message = self.convert_to_mp4(item_name)
-                print message
+                print "%s : %s" % (item_name, message)
+
 
 # Logging
 LOG_FILENAME = "/tmp/avi_to_mp4.log"
