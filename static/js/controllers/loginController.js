@@ -9,8 +9,8 @@
 
     $scope.signIn = function () {
         var info = {
-            ConsumerNumber: $scope.user.username,
-            Password: $scope.user.password
+            ConsumerNumber: 'sreehari.parameswaran@cognizant.com',
+            Password: 'demo'
         };
         loginService.login(function (success) {
             $scope.loginFailed = !success;

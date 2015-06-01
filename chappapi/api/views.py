@@ -189,7 +189,7 @@ class VideoUploadView(views.APIView):
                 headers_content.update({'X-Object-Meta-' + header: metadata.get(header)})
 
             h = httplib.HTTPConnection("23.246.246.66:8080")
-            h.request('PUT', '/swift/v1/Videos/' + up_file.name, open(video_path, 'rb'), headers_content)
+            h.request('PUT', '/swift/v1/Avis/' + up_file.name, open(video_path, 'rb'), headers_content)
             response = h.getresponse()
             return Response(response.read(), response.status)
         except:
