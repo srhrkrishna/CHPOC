@@ -178,8 +178,8 @@ class VideoUploadView(views.APIView):
             if thumbnail_name:
                 headers_content["X-Object-Meta-Thumbnail"] = thumbnail_name
                 if 'HTTP_X_CH_CAM_HARDWARE_ID' in metadata.keys() and 'HTTP_X_CH_CAM_SERIAL_NUM' in metadata.keys():
-                    endpoint = '/swift/v1/Thumbnails/%s_%s/%s' % (
-                        metadata['HTTP_X_CH_CAM_SERIAL_NUM'], metadata['HTTP_X_CH_CAM_HARDWARE_ID'],
+                    endpoint = '/swift/v1/Thumbnails/Camera_%s/%s' % (
+                        metadata['HTTP_X_CH_CAM_HARDWARE_ID'],
                         thumbnail_name)
                 else:
                     endpoint = '/swift/v1/Thumbnails/%s' % thumbnail_name

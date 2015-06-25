@@ -88,8 +88,8 @@ class VideoProcessor():
                 headers_content2.update({header: metadata.get(header)})
 
             if 'x-object-meta-http-x-ch-cam-serial-num' in metadata.keys() and 'x-object-meta-http-x-ch-cam-hardware-id' in metadata.keys():
-                endpoint = '/swift/v1/Videos/%s_%s/%s' % (
-                metadata['x-object-meta-http-x-ch-cam-serial-num'], metadata['x-object-meta-http-x-ch-cam-hardware-id'],
+                endpoint = '/swift/v1/Videos/Camera_%s/%s' % (
+                metadata['x-object-meta-http-x-ch-cam-hardware-id'],
                 mp4_file_name)
             else:
                 endpoint = '/swift/v1/Videos/%s' % mp4_file_name
@@ -173,7 +173,7 @@ sys.stdout = MyLogger(logger, logging.INFO)
 sys.stderr = MyLogger(logger, logging.ERROR)
 
 
-# while True:
-#     VideoProcessor().convert_from_avi_to_mp4()
-#     time.sleep(10)
-VideoProcessor().convert_from_avi_to_mp4()
+while True:
+    VideoProcessor().convert_from_avi_to_mp4()
+    time.sleep(10)
+# VideoProcessor().convert_from_avi_to_mp4()
