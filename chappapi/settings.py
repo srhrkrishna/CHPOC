@@ -117,8 +117,10 @@ CORS_ALLOW_HEADERS = (
         'x-a12n',
         'filename',
         'thumbnail',
-        'thumbnailname'
+        'thumbnailname',
+        'x-pseudo-folder'
     )
 CORS_EXPOSE_HEADERS = (
         'x-a12n',
+        'x-pseudo-folder',
     )
