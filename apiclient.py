@@ -9,8 +9,8 @@ class CustomRequest(object):
         self.full_path = full_path
 
     def send_request(self):
-        h = httplib.HTTPConnection("127.0.0.1:8001")
-        # h = httplib.HTTPConnection("169.53.139.163")
+        # h = httplib.HTTPConnection("127.0.0.1:8001")
+        h = httplib.HTTPConnection("169.53.139.163")
         h.request(self.request_type, self.full_path, self.payload, self.header_content)
         return h.getresponse()
 
@@ -29,15 +29,15 @@ print 'auth_token: '+auth_token
 
 
 # upload video
-# headersContent = {"Content-Disposition": "attachment; filename=rdk20150601_070038.avi", "Content-Type": "multipart/form-data",
-#                   "x-ch-cam-serial-num": "90F652EE8010", "x-ch-cam-hardware-id":"0001",
-#                   "x-a12n":auth_token, "x-ch-date-created":"5-4-2015", "x-ch-RDK_FW_VERSION_TAG2":"cartoon", "x-ch-sample-long-metadata": "This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information." }
-#
-# obj = CustomRequest('PUT', headersContent, open('/home/krishna/Downloads/rdk20150601_070038.avi', 'rb'), '/upload/')
-# response = obj.send_request()
-# print '---- Upload Video ----'
-# print 'body: ' + str(response.read())
-# print 'status: ' + str(response.status)
+headersContent = {"Content-Disposition": "attachment; filename=rdk20150601_070038.avi", "Content-Type": "multipart/form-data",
+                  "x-ch-cam-serial-num": "90F652EE8010", "x-ch-cam-hardware-id":"0001",
+                  "x-a12n":auth_token, "x-ch-date-created":"5-4-2015", "x-ch-RDK_FW_VERSION_TAG2":"cartoon", "x-ch-sample-long-metadata": "This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information.This is a very very very very very very very very very very very very very very very very very very very long metadata information." }
+
+obj = CustomRequest('PUT', headersContent, open('/home/krishna/Downloads/rdk20150601_070038.avi', 'rb'), '/upload/')
+response = obj.send_request()
+print '---- Upload Video ----'
+print 'body: ' + str(response.read())
+print 'status: ' + str(response.status)
 
 # # upload thumbnail
 # headersContent = {"Content-Disposition": "attachment; filename=test.png", "Content-Type": "multipart/form-data",

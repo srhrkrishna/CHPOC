@@ -55,9 +55,12 @@ class VideoView(views.APIView):
         except BaseException:
             return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
+        if '___' in file_name:
+            str_file_name = file_name.replace('___', '/')
+
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token}
-        h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
+        h.request('GET', '/swift/v1/Videos/' + str_file_name, '', headers_content)
         response = h.getresponse()
         if not response.status == status.HTTP_200_OK:
             return Response(response.read(), response.status)
@@ -98,9 +101,13 @@ class VideoStreamView(views.APIView):
         except BaseException:
             return Response('File name not provided', status.HTTP_400_BAD_REQUEST)
 
+        if '___' in file_name:
+            str_file_name = file_name.replace('___', '/')
+
+
         h = httplib.HTTPConnection("23.246.246.66:8080")
         headers_content = {"X-Auth-Token": auth_token}
-        h.request('GET', '/swift/v1/Videos/' + file_name, '', headers_content)
+        h.request('GET', '/swift/v1/Videos/' + str_file_name, '', headers_content)
         response = h.getresponse()
         if not response.status == status.HTTP_200_OK:
             return Response(response.read(), response.status)
