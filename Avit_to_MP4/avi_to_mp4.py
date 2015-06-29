@@ -89,7 +89,7 @@ class VideoProcessor():
 
             if 'x-object-meta-http-x-ch-cam-serial-num' in metadata.keys() and 'x-object-meta-http-x-ch-cam-hardware-id' in metadata.keys():
                 endpoint = '/swift/v1/Videos/Camera_%s/%s' % (
-                metadata['x-object-meta-http-x-ch-cam-hardware-id'],
+                metadata['x-object-meta-http-x-ch-cam-serial-num'],
                 mp4_file_name)
             else:
                 endpoint = '/swift/v1/Videos/%s' % mp4_file_name
