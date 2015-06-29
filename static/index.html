@@ -43,7 +43,66 @@
                         </progressbar>
                     </div>
                 </div>
-                <div class='content-container container-fluid' ng-show="currentUser.length !== 0">
+
+                <!-- Video table with count and folder name-->
+
+                <button type="button" class="btn btn-link" ng-show="showBackButton" ng-click="showTable()"> &#60;&#60;Back</button>
+
+                <div class='content-container container-fluid' ng-show="showFolderVideos" >
+                    <div class="container-fluid left">
+                        <div class="row show-grid" ng-repeat="video in videos | orderBy:'-last_modified'">
+                            <div class="col-xs-5 image-container">
+                                <img class="img_thumbnail"  ng-src="{{ video.thumbnail == 'Thumbnail not found' && './images/not_found.jpeg' || 'data:image/jpeg;base64,' + video.thumbnail }}" alt="{{ link.name }}"></img>
+                                <div class="play_button">
+                                    <div class="image_align_center">
+                                        <a href="#" ng-click="viewVideo(viewVideoFolderName + video.name)" class="pointer">
+                                            <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="download_button">
+                                <a href="#" ng-click="downloadFile(downloadFolderName + video.name)" class="pointer">
+                                    <span class="glyphicon glyphicon-download-alt" aria-hidden="true">
+                                    </span>
+                                </a>
+                                <br />
+                                <a href="#" ng-click="viewMetadata( folderName + video.name )" class="pointer">
+                                    <span class="glyphicon glyphicon-list" aria-hidden="true">
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="col-xs-8 text-wrap">
+                                <div>Name: {{ video.name }}</div>
+                                <div>Size: {{ video.bytes / (1024 * 1024) | number:2 }} MB</div>
+                                <div>Last Modified: {{ video.last_modified | date:'MM/dd/yyyy @ h:mm:ssa'}}</div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+            <div class="container">
+
+                    <table class="table table-striped table-bordered" ng-show="tableShow"  style="border: 1px solid rgba(86, 61, 124, 0.2);">
+                        <thead>
+                        <tr class="show-grid-header">
+                            <th>Folder Name</th>
+                            <th>Count</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="folder in folders" ng-class="{'alternate-row':!$even}" >
+                            <td><button type="button" class="btn btn-link" ng-click="getFolderForVideos(folder.name)" >{{ folder.name }}</button></td>
+                            <td><button type="button" class="btn btn-link"  ng-click="getFolderForVideos(folder.name)">{{ folder.count }}</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+             <!--   <div class='content-container container-fluid' ng-show="currentUser.length !== 0"> -->
+                <div class='content-container container-fluid' ng-show="false">
                     <div class="container-fluid left">
                         <div class="row show-grid" ng-repeat="link in links | orderBy:'-last_modified'">
                             <div class="col-xs-5 image-container">
