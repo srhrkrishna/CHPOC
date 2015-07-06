@@ -1,4 +1,4 @@
-﻿openstackApp.controller('loginController', ['$scope', '$rootScope', '$modalInstance', 'loginService', function ($scope, $rootScope, $modalInstance, loginService) {
+﻿openstackApp.controller('loginController', ['$scope', '$rootScope', '$modalInstance', 'loginService','jsonService','jsonFolderService',function ($scope, $rootScope, $modalInstance, loginService,jsonService,jsonFolderService) {
 
     $scope.user = {
         username: "",
@@ -12,6 +12,9 @@
             ConsumerNumber: 'sreehari.parameswaran@cognizant.com',
             Password: 'demo'
         };
+
+       // jsonService.login();
+
         loginService.login(function (success) {
             $scope.loginFailed = !success;
             $rootScope.$broadcast("loginSuccess", {

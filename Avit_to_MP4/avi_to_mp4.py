@@ -87,7 +87,15 @@ class VideoProcessor():
             for header in metadata:
                 headers_content2.update({header: metadata.get(header)})
 
-            h2.request('PUT', '/swift/v1/Videos/' + mp4_file_name, open(self.file_path + mp4_file_name, 'rb'), headers_content2)
+            if 'x-object-meta-http-x-ch-cam-serial-num' in metadata.keys() and 'x-object-meta-http-x-ch-cam-hardware-id' in metadata.keys():
+                endpoint = '/swift/v1/Videos/Camera_%s_%s/%s' % (
+                metadata['x-object-meta-http-x-ch-cam-manufacturer'],
+                metadata['x-object-meta-http-x-ch-cam-serial-num'],
+                mp4_file_name)
+            else:
+                endpoint = '/swift/v1/Videos/%s' % mp4_file_name
+
+            h2.request('PUT', endpoint, open(self.file_path + mp4_file_name, 'rb'), headers_content2)
             response2 = h2.getresponse()
         except Exception, e:
             return str(e)
@@ -97,7 +105,7 @@ class VideoProcessor():
         else:
             # Delete previous file
             h3 = httplib.HTTPConnection(self.swift_ip)
-            headers_content3 = {"X-Auth-Token": self.auth_token, "Content-Type":"application/json"}
+            headers_content3 = {"X-Auth-Token": self.auth_token, "Content-Type": "application/json"}
             h3.request('DELETE', '/swift/v1/Avis/' + file_name, '', headers_content3)
             response3 = h3.getresponse()
             if response3.status == status.HTTP_204_NO_CONTENT:
@@ -113,8 +121,9 @@ class VideoProcessor():
         headers_content = {"X-Auth-Token": self.auth_token, "Accept": "application/json"}
         h.request('GET', '/swift/v1/Avis?format=json', '', headers_content)
         response = h.getresponse()
+        output = response.read()
         if response.status == status.HTTP_200_OK:
-            obj = json.loads(response.read())
+            obj = json.loads(output)
         else:
             return
         h.close()
@@ -124,7 +133,6 @@ class VideoProcessor():
             if item_name.endswith('.avi'):
                 message = self.convert_to_mp4(item_name)
                 print "%s : %s" % (item_name, message)
-
 
 # Logging
 LOG_FILENAME = "/tmp/avi_to_mp4.log"
@@ -137,7 +145,7 @@ parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_
 # If the log file is specified on the command line then override the default
 args = parser.parse_args()
 if args.log:
-        LOG_FILENAME = args.log
+    LOG_FILENAME = args.log
 
 # Configure logging to log to a file
 logger = logging.getLogger(__name__)
@@ -151,15 +159,16 @@ logger.addHandler(handler)
 
 # Make a class we can use to capture stdout and sterr in the log
 class MyLogger(object):
-        def __init__(self, logger, level):
-                """Needs a logger and a logger level."""
-                self.logger = logger
-                self.level = level
+    def __init__(self, logger, level):
+        """Needs a logger and a logger level."""
+        self.logger = logger
+        self.level = level
 
-        def write(self, message):
-                # Only log if there is a message (not just a new line)
-                if message.rstrip() != "":
-                        self.logger.log(self.level, message.rstrip())
+    def write(self, message):
+        # Only log if there is a message (not just a new line)
+        if message.rstrip() != "":
+            self.logger.log(self.level, message.rstrip())
+
 
 sys.stdout = MyLogger(logger, logging.INFO)
 sys.stderr = MyLogger(logger, logging.ERROR)
@@ -168,3 +177,4 @@ sys.stderr = MyLogger(logger, logging.ERROR)
 while True:
     VideoProcessor().convert_from_avi_to_mp4()
     time.sleep(10)
+# VideoProcessor().convert_from_avi_to_mp4()

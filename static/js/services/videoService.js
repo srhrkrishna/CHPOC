@@ -2,7 +2,6 @@ openstackApp.service('videoService', ['$http', function ($http) {
 
 	var url = App_Constants.url + '/list/?' + new Date(), videoSrvc = {};
 
-
 	videoSrvc.getVideos = function(success, error) {
 		$http.get(url).
 	  		success(function(data, status) {
@@ -10,10 +9,17 @@ openstackApp.service('videoService', ['$http', function ($http) {
 	  		}).error(function(data, status) {
 
 	  		});
+
+
   	}
+
+
+
 
     return videoSrvc;
 
 
 }]);
+
+
 
