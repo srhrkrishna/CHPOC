@@ -173,7 +173,7 @@ class VideoUploadView(views.APIView):
             thumbnail_name = up_file.name.split('.')[0] + '.jpeg'
             thumbnail_path = file_path + thumbnail_name
 
-            command = '/home/ubuntu/bin/ffmpeg -y -itsoffset -2  -i %s -vcodec mjpeg -vframes 1 -an -f rawvideo -s 320x240 %s' % \
+            command = '~/bin/ffmpeg -y -itsoffset -2  -i %s -vcodec mjpeg -vframes 1 -an -f rawvideo -s 320x240 %s' % \
                       (video_path, thumbnail_path)
             p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             output = p.communicate()[0]
