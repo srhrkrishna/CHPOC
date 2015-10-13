@@ -10,7 +10,7 @@
     $scope.signIn = function () {
         var info = {
             ConsumerNumber: 'sreehari.parameswaran@cognizant.com',
-            Password: 'demo'
+            Password: 'Admin1234$$'
         };
 
        // jsonService.login();

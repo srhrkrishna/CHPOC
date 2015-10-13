@@ -29,7 +29,7 @@ class VideoProcessor():
         # ...
         keystone = ksclient.Client(auth_url="http://23.246.246.66:5000/v2.0",
                                    username="sreehari.parameswaran@cognizant.com",
-                                   password="demo",
+                                   password="Admin1234$$",
                                    tenant_name="sreehari.parameswaran@cognizant.com")
         self.auth_token = keystone.auth_token
 
